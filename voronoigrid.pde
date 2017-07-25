@@ -2,16 +2,20 @@ int fontend = 8;
 int nchars = 0;
 boolean record; 
 PVector object;
-
-/// buttonz
+/// state
 boolean doShowPoints = true;
 boolean doShowDelaunay;
 boolean doClip;
 boolean doSave;
-
 // change this for grid size
 int gridSize = 15;
+// change this for strokeweight
 int strokedim=1;
+
+  int centerLimit = 250; // variable to control the diameter of the spiral
+  int theta = 20; //increase1s with every point in your spiral, producing the spiral effect.
+
+
 import processing.pdf.*; 
 import toxi.geom.*;
 import toxi.geom.mesh2d.*;
@@ -70,27 +74,24 @@ void setup() {
 
 void draw() {  
   beginRaw(PDF, "output.pdf");
-
   background(255);
+  int limitone = 600; // variable to control the diameter of the spiral
 
-  //noLoop();
   //glued to grid
+  object.x = mouseX;
+  object.y = mouseY;
+  object.x = int(object.x/gridSize)*gridSize;
+  object.y = int(object.y/gridSize)*gridSize;
+   // organic shapes
+  if (key == '1') {
+    drawPoint(mouseX, mouseY, 0, 0, false);
+  }
   if (key == '3') {  
     if (mousePressed) {
-
-      object.x = mouseX;
-      object.y = mouseY;
-      object.x = int(object.x/gridSize)*gridSize;
-      object.y = int(object.y/gridSize)*gridSize;
-      drawPoint(object.x, object.y, 1, 1);
+      drawPoint(object.x, object.y);
     }
   }
-  if (key == '1') {
-    drawPoint(mouseX, mouseY, 10, 10);
-  }
-  int centerLimit = 250; // variable to control the diameter of the spiral
-  int theta = 20; //increases with every point in your spiral, producing the spiral effect.
-  if (key == '4') {
+  if (key == '4' && mousePressed) {
     theta=0; //reset theta 
     for (int k=0; k<centerLimit; k++) {     
       theta +=1;
@@ -98,13 +99,36 @@ void draw() {
       drawPoint(object.x, object.y, 3*theta/2, 3*theta/2);
     }
   }
+  if (key == '5') {
+    int k= 0;
+    for (k=0; k<limitone; k+=gridSize) {
+      drawPoint( k, 300);
+      drawPoint( k, 600);
+      drawPoint( k, 900);
+      drawPoint( k, 100);
+      drawPoint( k, 200);
+      drawPoint( k, 300);
+      drawPoint( 300, k);
+    }
+  }
+ 
+  
   drawVoronoi(); //renders
 }
 
-
-void drawPoint(float orgX, float orgY, float theta, float diameter) { // generates and adds circular points
+void drawPoint(float orgX, float orgY) {
+  drawPoint(orgX, orgY, 0, 0);
+}
+void drawPoint(float orgX, float orgY, float theta, float diameter) {
+  drawPoint(orgX, orgY, theta, diameter, true);
+}
+void drawPoint(float orgX, float orgY, float theta, float diameter, boolean stickToGrid) { // generates and adds circular points
   float xPos = sin(theta)*diameter+orgX;
   float yPos = cos(theta)*diameter+orgY;
+  if (stickToGrid) {
+    xPos = round(xPos/gridSize)*gridSize;
+    yPos = round(yPos/gridSize)*gridSize;
+  }
   voronoi.addPoint(new Vec2D(xPos, yPos));
 }
 
@@ -115,7 +139,7 @@ FloatRange xpos, ypos;
 ToxiclibsSupport gfx;
 
 // empty voronoi mesh container
-Voronoi voronoi = new Voronoi(100000);
+Voronoi voronoi = new Voronoi();
 
 // optional polygon clipper
 PolygonClipper2D clip;
