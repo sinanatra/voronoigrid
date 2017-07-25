@@ -3,6 +3,12 @@ int nchars = 0;
 boolean record; 
 PVector object;
 
+/// buttonz
+boolean doShowPoints = true;
+boolean doShowDelaunay;
+boolean doClip;
+boolean doSave;
+
 // change this for grid size
 int gridSize = 15;
 
@@ -19,84 +25,73 @@ Slider abc;
 
 void setup() {
   size(800, 1000, P3D);
-  
+
   cp5 = new ControlP5(this);
   cp5.addSlider("slider")
+    .setColorForeground(255)
+    .setColorActive(255)
+    .setColorLabel(0)
+    .setColorValue(255)
     .setPosition(10, 10)
     .setSize(100, 20)
     .setRange(15, 50)
-    .setValue(15);
-    
-    
-  if (record) {
-    beginRecord(PDF, "frame-####.pdf");
-  }
+    .setValue(15)
+
+    ;
+
+  cp5.addToggle("doShowPoints")
+    .setColorForeground(255)
+    .setColorValue(0)
+    .setColorLabel(0)
+    .setPosition(10, 35)
+    .setSize(100, 20)
+
+    ;
+
+
   object = new PVector(random(width), random(height));
   setupVoronoi(); // create your voronoi generator
 }
 
-void draw() {
+void draw() {  
+  beginRaw(PDF, "output.pdf");
+
+  background(255);
 
   //noLoop();
-  beginRaw(PDF, "output.pdf");
   //glued to grid
-  if (mousePressed) {
-    object.x = mouseX;
-    object.y = mouseY;
+  if (key == '3') {  
+    if (mousePressed) {
 
-    object.x = int(object.x/gridSize)*gridSize;
-    object.y = int(object.y/gridSize)*gridSize;
-
-    drawPoint(object.x, object.y, 1, 1);
-    if (key == '3')
+      object.x = mouseX;
+      object.y = mouseY;
+      object.x = int(object.x/gridSize)*gridSize;
+      object.y = int(object.y/gridSize)*gridSize;
       drawPoint(object.x, object.y, 1, 1);
+    }
+  }
+  if (key == '1') {
+    drawPoint(mouseX, mouseY, 10, 10);
   }
   int centerLimit = 250; // variable to control the diameter of the spiral
   int theta = 20; //increases with every point in your spiral, producing the spiral effect.
-
-
-
   if (key == '4') {
-
     theta=0; //reset theta 
     for (int k=0; k<centerLimit; k++) {     
       theta +=1;
-
       //One spiral in center with large-ish shapes
-      drawPoint(0, 0, 3*theta/2, 3*theta/2);
-      drawPoint(0, 0, 3*theta/2, 3*theta/2);
+      drawPoint(object.x, object.y, 3*theta/2, 3*theta/2);
     }
   }
   drawVoronoi(); //renders
-  endRaw();
 }
 
 
-
-
-// into grid
-void mouseDragged() {
-  object.x = mouseX;
-  object.y = mouseY;
-  object.x = int(object.x/gridSize)*gridSize;
-  object.y = int(object.y/gridSize)*gridSize;
-  drawPoint(object.x, object.y, 1, 1);
-}
-void keyPressed() {
-  // unorganic
-  if (key == '1')
-    drawPoint(mouseX, mouseY, 1, 1);
-}
 void drawPoint(float orgX, float orgY, float theta, float diameter) { // generates and adds circular points
-
   float xPos = sin(theta)*diameter+orgX;
   float yPos = cos(theta)*diameter+orgY;
-
   voronoi.addPoint(new Vec2D(xPos, yPos));
 }
-
-
-
 
 // ranges for x/y positions of points
 FloatRange xpos, ypos;
@@ -110,11 +105,6 @@ Voronoi voronoi = new Voronoi(100000);
 // optional polygon clipper
 PolygonClipper2D clip;
 
-// switches
-boolean doShowPoints = true;
-boolean doShowDelaunay;
-boolean doClip;
-boolean doSave;
 
 void setupVoronoi() {
 
@@ -124,18 +114,15 @@ void setupVoronoi() {
   // focus y positions around bottom (w/ 50% standard deviation)
   ypos=new BiasedFloatRange(0, height, height, 0.5f);
   // setup clipper with centered rectangle
-  clip=new SutherlandHodgemanClipper(new Rect(width*0.125, height*0.125, width*0.75, height*0.75));
+  clip=new SutherlandHodgemanClipper(new Rect(width*125, height*0.125, width*0.75, height*0.75));
   gfx = new ToxiclibsSupport(this);
-  textFont(createFont("SansSerif", 10));
 }
 
 void drawVoronoi() {
-  if (doSave) {
-    saveFrame("voronoi-" + DateUtils.timeStamp() + ".png");
-  }
+
   //rect(0, 0, width, height);
-  background(0);
-  stroke(255); 
+  background(255);
+  stroke(0); 
   strokeWeight(1); 
   // stroke(0);
   noFill();
@@ -159,7 +146,7 @@ void drawVoronoi() {
   }
   // draw original points added to voronoi
   if (doShowPoints) {
-    fill(255);
+    fill(0);
     for (Vec2D c : voronoi.getSites()) {
       ellipse(c.x, c.y, 10, 10);
     }
@@ -176,4 +163,10 @@ void drawVoronoi() {
 void slider(float sizer) {
   gridSize = int(sizer);
   println("changing grid to: "+sizer);
+}
+void keyPressed() {
+  if (key == 'q') {
+    endRaw();
+    exit();
+  }
 }
