@@ -11,7 +11,7 @@ boolean doSave;
 
 // change this for grid size
 int gridSize = 15;
-
+int strokedim=1;
 import processing.pdf.*; 
 import toxi.geom.*;
 import toxi.geom.mesh2d.*;
@@ -43,10 +43,25 @@ void setup() {
     .setColorForeground(255)
     .setColorValue(0)
     .setColorLabel(0)
+    .setPosition(10, 65)
+    .setSize(20, 20)
+    ;
+
+
+  cp5 = new ControlP5(this);
+  cp5.addSlider("strokedim")
+    .setColorForeground(255)
+    .setColorActive(255)
+    .setColorLabel(0)
+    .setColorValue(255)
     .setPosition(10, 35)
     .setSize(100, 20)
+    .setRange(1, 10)
+    .setValue(1)
 
     ;
+
+
 
 
   object = new PVector(random(width), random(height));
@@ -123,7 +138,7 @@ void drawVoronoi() {
   //rect(0, 0, width, height);
   background(255);
   stroke(0); 
-  strokeWeight(1); 
+  strokeWeight(strokedim); 
   // stroke(0);
   noFill();
   // draw all voronoi polygons, clip if needed
