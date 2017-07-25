@@ -7,14 +7,11 @@ boolean doShowPoints = true;
 boolean doShowDelaunay;
 boolean doClip;
 boolean doSave;
-// change this for grid size
-int gridSize = 15;
-// change this for strokeweight
-int strokedim=1;
-
-  int centerLimit = 250; // variable to control the diameter of the spiral
-  int theta = 20; //increase1s with every point in your spiral, producing the spiral effect.
-
+int gridSize = 15;// change this for grid size
+int strokedim=1; // change this for strokeweight
+int centerLimit = 20; // spiral diameter
+int theta = 20; // for increasing spiral
+int ellipsesize= 10;
 
 import processing.pdf.*; 
 import toxi.geom.*;
@@ -31,29 +28,23 @@ void setup() {
   size(800, 1000, P3D);
 
   cp5 = new ControlP5(this);
-  cp5.addSlider("slider")
+  cp5.addSlider("gridSize")
     .setColorForeground(255)
     .setColorActive(255)
     .setColorLabel(0)
     .setColorValue(255)
+    .setColorBackground(color(0, 0, 255))
+
     .setPosition(10, 10)
     .setSize(100, 20)
     .setRange(15, 50)
     .setValue(15)
-
     ;
-
-  cp5.addToggle("doShowPoints")
-    .setColorForeground(255)
-    .setColorValue(0)
-    .setColorLabel(0)
-    .setPosition(10, 65)
-    .setSize(20, 20)
-    ;
-
 
   cp5 = new ControlP5(this);
   cp5.addSlider("strokedim")
+    .setColorBackground(color(0, 0, 255))
+
     .setColorForeground(255)
     .setColorActive(255)
     .setColorLabel(0)
@@ -62,8 +53,46 @@ void setup() {
     .setSize(100, 20)
     .setRange(1, 10)
     .setValue(1)
-
     ;
+
+  cp5 = new ControlP5(this);
+  cp5.addSlider("ellipsesize")
+    .setColorBackground(color(0, 0, 255))
+
+    .setColorForeground(255)
+    .setColorActive(255)
+    .setColorLabel(0)
+    .setColorValue(255)
+    .setPosition(10, 60)
+    .setSize(100, 20)
+    .setRange(10, 100)
+    .setValue(10)
+    ;
+
+  cp5.addToggle("doShowPoints")
+    .setColorBackground(color(0, 0, 255))
+
+    .setColorForeground(255)
+    .setColorValue(0)
+    .setColorLabel(0)
+    .setPosition(190, 10)
+    .setSize(20, 20)
+    ;
+
+  cp5 = new ControlP5(this);
+  cp5.addSlider("centerLimit")
+    .setColorBackground(color(0, 0, 255))
+    .setColorForeground(255)
+    .setColorActive(255)
+    .setColorLabel(0)
+    .setColorValue(255)
+    .setPosition(10, 85)
+    .setSize(100, 20)
+    .setRange(20, 500)
+    .setValue(20)
+    ;
+
+
 
 
 
@@ -82,7 +111,7 @@ void draw() {
   object.y = mouseY;
   object.x = int(object.x/gridSize)*gridSize;
   object.y = int(object.y/gridSize)*gridSize;
-   // organic shapes
+  // organic shapes
   if (key == '1') {
     drawPoint(mouseX, mouseY, 0, 0, false);
   }
@@ -102,17 +131,36 @@ void draw() {
   if (key == '5') {
     int k= 0;
     for (k=0; k<limitone; k+=gridSize) {
-      drawPoint( k, 300);
-      drawPoint( k, 600);
-      drawPoint( k, 900);
-      drawPoint( k, 100);
-      drawPoint( k, 200);
-      drawPoint( k, 300);
-      drawPoint( 300, k);
+      drawPoint( k*1, k*1);
+      drawPoint( k*2, k*2);
+      drawPoint( k*2, k*3);
+      drawPoint( k*4, k*4);
+      drawPoint( k*5, k*5);
     }
   }
- 
-  
+  if (key == '6') {
+    int k= 0;
+    for (k=0; k<limitone; k+=gridSize) {
+      drawPoint( k*2, 300);
+      drawPoint( k*6, 100);
+      drawPoint( k*4, 600);
+      drawPoint( k*8, 600);
+      drawPoint( 300, k*2);
+      drawPoint( 100, k*6);
+      drawPoint( 600, k*4);
+      drawPoint( 800, k*8);
+    }
+  }
+
+  if (key == '7') {
+    int k= 0;
+    for (k=0; k<limitone; k+=gridSize) {
+      drawPoint( 350, k*8);
+      drawPoint( 400, k*3);
+      drawPoint( 450, k*8);
+    }
+  }
+
   drawVoronoi(); //renders
 }
 
@@ -186,8 +234,9 @@ void drawVoronoi() {
   // draw original points added to voronoi
   if (doShowPoints) {
     fill(0);
+    noStroke();
     for (Vec2D c : voronoi.getSites()) {
-      ellipse(c.x, c.y, 10, 10);
+      ellipse(c.x, c.y, ellipsesize, ellipsesize);
     }
   }
 
