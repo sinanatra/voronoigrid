@@ -4,15 +4,15 @@ boolean record;
 PVector object;
 /// state
 boolean doShowPoints = true;
-boolean doShowDelaunay;
-boolean doClip;
 boolean doSave;
+boolean drawGradient = false;
 int gridSize = 15;// change this for grid size
 int strokedim=1; // change this for strokeweight
 int centerLimit = 20; // spiral diameter
 int theta = 20; // for increasing spiral
 int ellipsesize= 10;
 
+import java.util.List;
 import processing.pdf.*; 
 import toxi.geom.*;
 import toxi.geom.mesh2d.*;
@@ -25,7 +25,7 @@ int sliderValue = 100;
 Slider abc;
 
 void setup() {
-  size(800, 1000, P3D);
+  size(600, 800, P3D);
 
   cp5 = new ControlP5(this);
   cp5.addSlider("gridSize")
@@ -42,7 +42,7 @@ void setup() {
     ;
 
   cp5 = new ControlP5(this);
-  cp5.addSlider("strokedim")
+  cp5.addSlider("weight")
     .setColorBackground(color(0, 0, 255))
 
     .setColorForeground(255)
@@ -78,6 +78,15 @@ void setup() {
     .setPosition(190, 10)
     .setSize(20, 20)
     ;
+      cp5.addToggle("drawGradient")
+    .setColorBackground(color(0, 0, 255))
+
+    .setColorForeground(255)
+    .setColorValue(0)
+    .setColorLabel(0)
+    .setPosition(190, 60)
+    .setSize(20, 20)
+    ;
 
   cp5 = new ControlP5(this);
   cp5.addSlider("centerLimit")
@@ -104,30 +113,34 @@ void setup() {
 void draw() {  
   beginRaw(PDF, "output.pdf");
   background(255);
-  int limitone = 600; // variable to control the diameter of the spiral
 
-  //glued to grid
-  object.x = mouseX;
-  object.y = mouseY;
-  object.x = int(object.x/gridSize)*gridSize;
-  object.y = int(object.y/gridSize)*gridSize;
+  drawVoronoi(); //renders
+}
+
+void mouseDragged() {
   // organic shapes
   if (key == '1') {
     drawPoint(mouseX, mouseY, 0, 0, false);
   }
-  if (key == '3') {  
-    if (mousePressed) {
-      drawPoint(object.x, object.y);
-    }
+  if (key == '3') {
+    drawPoint(mouseX, mouseY);
   }
-  if (key == '4' && mousePressed) {
+}
+
+void mousePressed() {
+  mouseDragged();
+  if (key == '4') {
     theta=0; //reset theta 
     for (int k=0; k<centerLimit; k++) {     
       theta +=1;
       //One spiral in center with large-ish shapes
-      drawPoint(object.x, object.y, 3*theta/2, 3*theta/2);
+      drawPoint(mouseX, mouseY, 3*theta/2, 3*theta/2);
     }
   }
+}
+
+void keyPressed() {
+  int limitone = 600; // variable to control the diameter of the spiral
   if (key == '5') {
     int k= 0;
     for (k=0; k<limitone; k+=gridSize) {
@@ -138,17 +151,20 @@ void draw() {
       drawPoint( k*5, k*5);
     }
   }
+
   if (key == '6') {
     int k= 0;
     for (k=0; k<limitone; k+=gridSize) {
-      drawPoint( k*2, 300);
-      drawPoint( k*6, 100);
-      drawPoint( k*4, 600);
-      drawPoint( k*8, 600);
-      drawPoint( 300, k*2);
-      drawPoint( 100, k*6);
-      drawPoint( 600, k*4);
-      drawPoint( 800, k*8);
+      drawPoint( k*2, height/8);
+      drawPoint( k*2, height/7);
+      drawPoint( k*2, height/6);
+      drawPoint( k*2, height/5);
+      drawPoint( k*2, height/4);
+      drawPoint( height/8, k*2);
+      drawPoint( height/7, k*2);
+      drawPoint( height/6, k*2);
+      drawPoint( height/5, k*2);
+      drawPoint( height/4, k*2);
     }
   }
 
@@ -161,7 +177,10 @@ void draw() {
     }
   }
 
-  drawVoronoi(); //renders
+  if (key == 'q') {
+    endRaw();
+    exit();
+  }
 }
 
 void drawPoint(float orgX, float orgY) {
@@ -177,7 +196,14 @@ void drawPoint(float orgX, float orgY, float theta, float diameter, boolean stic
     xPos = round(xPos/gridSize)*gridSize;
     yPos = round(yPos/gridSize)*gridSize;
   }
-  voronoi.addPoint(new Vec2D(xPos, yPos));
+
+  Vec2D point = new Vec2D(xPos, yPos);
+  for (Vec2D existing : voronoi.getSites()) {
+    if (existing.x == point.x && existing.y == point.y) {
+      return;
+    }
+  }
+  voronoi.addPoint(point);
 }
 
 // ranges for x/y positions of points
@@ -205,40 +231,65 @@ void setupVoronoi() {
   gfx = new ToxiclibsSupport(this);
 }
 
+Vec2D getCenter(Polygon2D polygon) {
+  for (Vec2D center : voronoi.getSites()) {
+    if (polygon.containsPoint(center)) {
+      return center;
+    }
+  }
+
+  return polygon.getCentroid();
+}
+
 void drawVoronoi() {
 
   //rect(0, 0, width, height);
   background(255);
-  stroke(0); 
-  strokeWeight(strokedim); 
+  stroke(0);
+  // strokeWeight(strokedim); 
   // stroke(0);
   noFill();
   // draw all voronoi polygons, clip if needed
   for (Polygon2D poly : voronoi.getRegions()) {
-    if (doClip) {
-      gfx.polygon2D(clip.clipPolygon(poly));
-    } else {
-      gfx.polygon2D(poly);
+    Vec2D centro = getCenter(poly);
+
+    float weight = pow(cos(poly.getArea()), 2) * (4 - 1) + 1;
+
+    // use strokedim for same size, wieght changes by the area
+    strokeWeight(weight);
+    strokeWeight(strokedim);
+    strokeWeight(2);
+
+    float start = pow(cos(poly.getArea()), 2) * (255 - 63) + 63;
+    float end = pow(sin(poly.getArea()), 2) * (255 - 63) + 63;
+    start = 255;
+    end = 0;
+
+    int numeroScalini = 10;
+    if (!drawGradient) {
+      numeroScalini = 1;
+      start = 255;
+      end = 255;
     }
-  }
-  // draw delaunay triangulation
-  if (doShowDelaunay) {
-    stroke(0);
-    fill(0);
-    beginShape(TRIANGLES);
-    for (Triangle2D t : voronoi.getTriangles()) {
-      gfx.triangle(t, false);
+    float step = 1.0 / numeroScalini;
+    for (float i = 1; i > 0; i -= step) {
+      Polygon2D scalato = new Polygon2D();
+      for (Vec2D point : poly.vertices) {
+        scalato.add(new Vec2D((point.x - centro.x) * i + centro.x, (point.y - centro.y) * i + centro.y));
+      }
+      float colore = i * (end - start) + start;
+      fill(colore, colore, colore);
+      gfx.polygon2D(scalato);
+      strokeWeight(0);
     }
-    endShape();
+
+    if (doShowPoints) {
+      fill(0);
+      strokeWeight(0);
+      ellipse(centro.x, centro.y, ellipsesize, ellipsesize);
+    }
   }
   // draw original points added to voronoi
-  if (doShowPoints) {
-    fill(0);
-    noStroke();
-    for (Vec2D c : voronoi.getSites()) {
-      ellipse(c.x, c.y, ellipsesize, ellipsesize);
-    }
-  }
 
   if (doSave) {
     endRecord();
@@ -251,10 +302,4 @@ void drawVoronoi() {
 void slider(float sizer) {
   gridSize = int(sizer);
   println("changing grid to: "+sizer);
-}
-void keyPressed() {
-  if (key == 'q') {
-    endRaw();
-    exit();
-  }
 }
