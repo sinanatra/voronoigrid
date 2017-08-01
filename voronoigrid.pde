@@ -1,3 +1,6 @@
+// Giacomo Nanni
+// www.giacomonanni.it
+
 int fontend = 8;
 int nchars = 0;
 boolean record; 
@@ -6,12 +9,18 @@ PVector object;
 boolean doShowPoints = true;
 boolean doSave;
 boolean drawGradient = false;
+int PointsColor = 0; // color circle
+//int lines = color(random(0, 20), random(0, 255), random(0, 255),70); // color lines
+int lines = 0;
+
 int gridSize = 15;// change this for grid size
 int strokedim=1; // change this for strokeweight
 int centerLimit = 20; // spiral diameter
 int theta = 20; // for increasing spiral
-int ellipsesize= 10;
-
+int ellipsesize= 10; 
+int scalini =50; // gradient steps
+float inizio= 255;
+float estremi= 255;
 import java.util.List;
 import processing.pdf.*; 
 import toxi.geom.*;
@@ -25,75 +34,67 @@ int sliderValue = 100;
 Slider abc;
 
 void setup() {
-  size(600, 800, P3D);
+  size(600, 900, P3D);
 
   cp5 = new ControlP5(this);
   cp5.addSlider("gridSize")
-    .setColorForeground(255)
-    .setColorActive(255)
-    .setColorLabel(0)
-    .setColorValue(255)
-    .setColorBackground(color(0, 0, 255))
+    .setColorForeground(color(0, 255, 200))
+    .setColorActive(color(0, 255, 200))
+    .setColorLabel(color(0, 255, 200))
 
     .setPosition(10, 10)
     .setSize(100, 20)
-    .setRange(15, 50)
-    .setValue(15)
+    .setRange(15, 300)
+    .setValue(100)
     ;
 
   cp5 = new ControlP5(this);
-  cp5.addSlider("weight")
-    .setColorBackground(color(0, 0, 255))
+  cp5.addSlider("strokedim")
 
-    .setColorForeground(255)
-    .setColorActive(255)
-    .setColorLabel(0)
+    .setColorForeground(color(0, 255, 200))
+    .setColorActive(color(0, 255, 200))
+    .setColorLabel(color(0, 255, 200))
     .setColorValue(255)
     .setPosition(10, 35)
     .setSize(100, 20)
-    .setRange(1, 10)
+    .setRange(0, 30)
     .setValue(1)
     ;
 
   cp5 = new ControlP5(this);
   cp5.addSlider("ellipsesize")
-    .setColorBackground(color(0, 0, 255))
-
-    .setColorForeground(255)
-    .setColorActive(255)
-    .setColorLabel(0)
+    .setColorForeground(color(0, 255, 200))
+    .setColorActive(color(0, 255, 200))
+    .setColorLabel(color(0, 255, 200))
     .setColorValue(255)
     .setPosition(10, 60)
     .setSize(100, 20)
-    .setRange(10, 100)
+    .setRange(10, 300)
     .setValue(10)
     ;
 
   cp5.addToggle("doShowPoints")
-    .setColorBackground(color(0, 0, 255))
-
-    .setColorForeground(255)
+    .setColorForeground(color(0, 255, 200))
+    .setColorActive(color(0, 255, 200))
     .setColorValue(0)
-    .setColorLabel(0)
+    .setColorLabel(color(0, 255, 200))
     .setPosition(190, 10)
     .setSize(20, 20)
     ;
-      cp5.addToggle("drawGradient")
-    .setColorBackground(color(0, 0, 255))
-
-    .setColorForeground(255)
+  cp5.addToggle("drawGradient")
+    .setColorForeground(color(0, 255, 200))
+    .setColorActive(color(0, 255, 200))
     .setColorValue(0)
-    .setColorLabel(0)
+    .setColorLabel(color(0, 255, 200))
     .setPosition(190, 60)
     .setSize(20, 20)
     ;
 
   cp5 = new ControlP5(this);
   cp5.addSlider("centerLimit")
-    .setColorBackground(color(0, 0, 255))
-    .setColorForeground(255)
-    .setColorActive(255)
-    .setColorLabel(0)
+    .setColorForeground(color(0, 255, 200))
+    .setColorActive(color(0, 255, 200))
+    .setColorLabel(color(0, 255, 200))
     .setColorValue(255)
     .setPosition(10, 85)
     .setSize(100, 20)
@@ -102,7 +103,40 @@ void setup() {
     ;
 
 
+  cp5 = new ControlP5(this);
+  cp5.addSlider("scalini")
+    .setColorForeground(color(0, 255, 200))
+    .setColorActive(color(0, 255, 200))
+    .setColorLabel(color(0, 255, 200))
+    .setPosition(10, 110)
+    .setSize(100, 20)
+    .setRange(2, 100)
+    .setValue(50)
+    ;
 
+
+  cp5 = new ControlP5(this);
+  cp5.addSlider("inizio")
+    .setColorForeground(color(0, 255, 200))
+    .setColorActive(color(0, 255, 200))
+    .setColorLabel(color(0, 255, 200))
+    .setPosition(10, 135)
+    .setSize(100, 20)
+    .setRange(0, 255)
+    .setValue(0)
+    ;
+
+
+  cp5 = new ControlP5(this);
+  cp5.addSlider("estremi")
+    .setColorForeground(color(0, 255, 200))
+    .setColorActive(color(0, 255, 200))
+    .setColorLabel(color(0, 255, 200))
+    .setPosition(10, 160)
+    .setSize(100, 20)
+    .setRange(0, 255)
+    .setValue(255)
+    ;
 
 
 
@@ -171,16 +205,30 @@ void keyPressed() {
   if (key == '7') {
     int k= 0;
     for (k=0; k<limitone; k+=gridSize) {
-      drawPoint( 350, k*8);
-      drawPoint( 400, k*3);
-      drawPoint( 450, k*8);
+      drawPoint( width/1, k*8);
+      drawPoint( width/width, k*8);
     }
   }
-
-  if (key == 'q') {
-    endRaw();
-    exit();
+  if (key == '8') {
+    int k= 0;
+    for (k=0; k<limitone; k+=gridSize) {
+      drawPoint( k*6, height/1);
+      drawPoint( k*6, height/height);
+    }
   }
+  if (key == '8') {
+    int k= 0;
+    for (k=0; k<limitone; k+=gridSize) {
+      drawPoint( k*2, height/8);
+      drawPoint( k*2, height/7);
+      drawPoint( k*2, height/6);
+    }
+  }
+  /*
+  if (key == 'q') {
+   endRaw();
+   exit();
+   }*/
 }
 
 void drawPoint(float orgX, float orgY) {
@@ -245,27 +293,30 @@ void drawVoronoi() {
 
   //rect(0, 0, width, height);
   background(255);
-  stroke(0);
+  stroke(lines);
   // strokeWeight(strokedim); 
   // stroke(0);
   noFill();
   // draw all voronoi polygons, clip if needed
+
   for (Polygon2D poly : voronoi.getRegions()) {
     Vec2D centro = getCenter(poly);
+    //int PointsColor = color(random(0, 20), random(0, 255), random(0, 255)); // color circle
+   // int lines = color(random(0, 20), random(0, 255), random(0, 255)); // color circle
 
     float weight = pow(cos(poly.getArea()), 2) * (4 - 1) + 1;
-
     // use strokedim for same size, wieght changes by the area
-    strokeWeight(weight);
     strokeWeight(strokedim);
-    strokeWeight(2);
+    strokeCap(SQUARE);
+
+    //strokeWeight(weight);
 
     float start = pow(cos(poly.getArea()), 2) * (255 - 63) + 63;
     float end = pow(sin(poly.getArea()), 2) * (255 - 63) + 63;
-    start = 255;
-    end = 0;
+    start = inizio;
+    end = estremi;
+    int numeroScalini = scalini;
 
-    int numeroScalini = 10;
     if (!drawGradient) {
       numeroScalini = 1;
       start = 255;
@@ -284,7 +335,7 @@ void drawVoronoi() {
     }
 
     if (doShowPoints) {
-      fill(0);
+      fill(PointsColor);
       strokeWeight(0);
       ellipse(centro.x, centro.y, ellipsesize, ellipsesize);
     }
