@@ -8,7 +8,17 @@ PVector object;
 /// state
 boolean doShowPoints = true;
 boolean doSave;
+boolean clearCanvas;
+boolean clearVoronoi;
+boolean drawOrganic;
 boolean drawGradient = false;
+boolean doClip=true;
+boolean doShowHelp=true;
+
+// optional polygon clipper
+SutherlandHodgemanClipper clip;
+
+
 int PointsColor = 0; // color circle
 //int lines = color(random(0, 20), random(0, 255), random(0, 255),70); // color lines
 int lines = 0;
@@ -34,7 +44,11 @@ int sliderValue = 100;
 Slider abc;
 
 void setup() {
-  size(600, 900, P3D);
+  size(800, 600, P3D);
+  background(255);
+  doClip=true;
+  rect(285, 10, 510, 580);
+
 
   cp5 = new ControlP5(this);
   cp5.addSlider("gridSize")
@@ -44,8 +58,8 @@ void setup() {
 
     .setPosition(10, 10)
     .setSize(100, 20)
-    .setRange(15, 300)
-    .setValue(100)
+    .setRange(15, 90)
+    .setValue(25)
     ;
 
   cp5 = new ControlP5(this);
@@ -77,6 +91,8 @@ void setup() {
     .setColorForeground(color(0, 255, 200))
     .setColorActive(color(0, 255, 200))
     .setColorValue(0)
+    .setLabel("hide dots")
+
     .setColorLabel(color(0, 255, 200))
     .setPosition(190, 10)
     .setSize(20, 20)
@@ -85,11 +101,54 @@ void setup() {
     .setColorForeground(color(0, 255, 200))
     .setColorActive(color(0, 255, 200))
     .setColorValue(0)
+    .setLabel("gradient")
+
     .setColorLabel(color(0, 255, 200))
     .setPosition(190, 60)
     .setSize(20, 20)
     ;
+  //clearVoronoi
+  cp5.addToggle("drawOrganic")
+    .setColorForeground(color(0, 255, 200))
+    .setColorActive(color(0, 255, 200))
+    .setColorValue(0)
+    .setLabel("organic")
 
+    .setColorLabel(color(0, 255, 200))
+    .setPosition(190, 105)
+    .setSize(20, 20)
+    ;
+  cp5.addToggle("doClip")
+    .setColorForeground(color(0, 255, 200))
+    .setColorActive(color(0, 255, 200))
+    .setColorValue(0)
+    .setColorLabel(color(0, 255, 200))
+    .setPosition(190, 145)
+    .setSize(20, 20)
+    ;
+
+  cp5.addButton("clearCanvas")
+    .setColorForeground(color(0, 255, 200))
+    .setColorActive(color(0, 255, 200))
+    .setColorValue(1)
+    .setLabel("clear")
+    .setColorLabel(color(0, 255, 200))
+    .setPosition(190, 205)
+    .setSize(20, 20)
+    ;
+
+
+
+  cp5.addToggle("doSave")
+    .setColorForeground(color(0, 255, 200))
+    .setColorActive(color(0, 255, 200))
+    .setColorValue(0)
+    .setLabel("SAVE AND CLOSE")
+
+    .setColorLabel(color(0, 255, 200))
+    .setPosition(190, 295)
+    .setSize(20, 20)
+    ;
   cp5 = new ControlP5(this);
   cp5.addSlider("centerLimit")
     .setColorForeground(color(0, 255, 200))
@@ -137,26 +196,25 @@ void setup() {
     .setRange(0, 255)
     .setValue(255)
     ;
-
-
-
   object = new PVector(random(width), random(height));
-  setupVoronoi(); // create your voronoi generator
+  setupVoronoi(); // create your voronoi generator31
 }
 
 void draw() {  
+  //rect(285, 10, 510, 580);
+
   beginRaw(PDF, "output.pdf");
   background(255);
+  rect(285, 10, 510, 580);
 
   drawVoronoi(); //renders
 }
 
 void mouseDragged() {
   // organic shapes
-  if (key == '1') {
+  if (drawOrganic) {
     drawPoint(mouseX, mouseY, 0, 0, false);
-  }
-  if (key == '3') {
+  } else {
     drawPoint(mouseX, mouseY);
   }
 }
@@ -187,6 +245,7 @@ void keyPressed() {
   }
 
   if (key == '6') {
+
     int k= 0;
     for (k=0; k<limitone; k+=gridSize) {
       drawPoint( k*2, height/8);
@@ -224,11 +283,6 @@ void keyPressed() {
       drawPoint( k*2, height/6);
     }
   }
-  /*
-  if (key == 'q') {
-   endRaw();
-   exit();
-   }*/
 }
 
 void drawPoint(float orgX, float orgY) {
@@ -246,6 +300,9 @@ void drawPoint(float orgX, float orgY, float theta, float diameter, boolean stic
   }
 
   Vec2D point = new Vec2D(xPos, yPos);
+  if (doClip && !clip.getBounds().containsPoint(point)) {
+    return;
+  }
   for (Vec2D existing : voronoi.getSites()) {
     if (existing.x == point.x && existing.y == point.y) {
       return;
@@ -263,9 +320,6 @@ ToxiclibsSupport gfx;
 // empty voronoi mesh container
 Voronoi voronoi = new Voronoi();
 
-// optional polygon clipper
-PolygonClipper2D clip;
-
 
 void setupVoronoi() {
 
@@ -275,7 +329,10 @@ void setupVoronoi() {
   // focus y positions around bottom (w/ 50% standard deviation)
   ypos=new BiasedFloatRange(0, height, height, 0.5f);
   // setup clipper with centered rectangle
-  clip=new SutherlandHodgemanClipper(new Rect(width*125, height*0.125, width*0.75, height*0.75));
+  //Rect clipBounds = new Rect(width*0.355, height*0.125, width*0.55, height*0.85);
+
+  Rect clipBounds = new Rect(285, 10, 510, 580);
+  clip=new SutherlandHodgemanClipper(clipBounds);
   gfx = new ToxiclibsSupport(this);
 }
 
@@ -292,7 +349,6 @@ Vec2D getCenter(Polygon2D polygon) {
 void drawVoronoi() {
 
   //rect(0, 0, width, height);
-  background(255);
   stroke(lines);
   // strokeWeight(strokedim); 
   // stroke(0);
@@ -300,17 +356,17 @@ void drawVoronoi() {
   // draw all voronoi polygons, clip if needed
 
   for (Polygon2D poly : voronoi.getRegions()) {
+
     Vec2D centro = getCenter(poly);
+
     //int PointsColor = color(random(0, 20), random(0, 255), random(0, 255)); // color circle
-   // int lines = color(random(0, 20), random(0, 255), random(0, 255)); // color circle
+    // int lines = color(random(0, 20), random(0, 255), random(0, 255)); // color circle
 
     float weight = pow(cos(poly.getArea()), 2) * (4 - 1) + 1;
-    // use strokedim for same size, wieght changes by the area
+    // use strokedim for same size, weight changes by the area
     strokeWeight(strokedim);
     strokeCap(SQUARE);
-
     //strokeWeight(weight);
-
     float start = pow(cos(poly.getArea()), 2) * (255 - 63) + 63;
     float end = pow(sin(poly.getArea()), 2) * (255 - 63) + 63;
     start = inizio;
@@ -330,22 +386,26 @@ void drawVoronoi() {
       }
       float colore = i * (end - start) + start;
       fill(colore, colore, colore);
+      if (doClip) {
+        scalato = clip.clipPolygon(scalato);
+      }
       gfx.polygon2D(scalato);
       strokeWeight(0);
     }
 
-    if (doShowPoints) {
+    if (doShowPoints && (!doClip || clip.getBounds().containsPoint(centro))) {
       fill(PointsColor);
       strokeWeight(0);
       ellipse(centro.x, centro.y, ellipsesize, ellipsesize);
     }
   }
-  // draw original points added to voronoi
 
-  if (doSave) {
-    endRecord();
-    doSave = false;
-  }
+  if (clearCanvas) {
+    voronoi = new Voronoi();
+    clearCanvas = false;
+  }   
+
+  // draw original points added to voronoi
 }
 
 /// SLIDER ///
@@ -353,4 +413,15 @@ void drawVoronoi() {
 void slider(float sizer) {
   gridSize = int(sizer);
   println("changing grid to: "+sizer);
+
+
+  if (doSave) {
+    endRaw();
+    //stop();
+    exit();
+  }
+  if (doClip) {
+    background(255);
+    doClip=!doClip;
+  }
 }
