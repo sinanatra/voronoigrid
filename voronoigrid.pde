@@ -5,24 +5,20 @@ int fontend = 8;
 int nchars = 0;
 boolean record; 
 PVector object;
-/// state
 boolean doShowPoints = true;
 boolean doSave;
+boolean spirale;
 boolean clearCanvas;
 boolean clearVoronoi;
 boolean drawOrganic;
 boolean drawGradient = false;
 boolean doClip=true;
 boolean doShowHelp=true;
-
-// optional polygon clipper
+//  polygon clipper
 SutherlandHodgemanClipper clip;
-
-
 int PointsColor = 0; // color circle
 //int lines = color(random(0, 20), random(0, 255), random(0, 255),70); // color lines
 int lines = 0;
-
 int gridSize = 15;// change this for grid size
 int strokedim=1; // change this for strokeweight
 int centerLimit = 20; // spiral diameter
@@ -49,22 +45,18 @@ void setup() {
   doClip=true;
   rect(285, 10, 510, 580);
 
-
   cp5 = new ControlP5(this);
   cp5.addSlider("gridSize")
     .setColorForeground(color(0, 255, 200))
     .setColorActive(color(0, 255, 200))
     .setColorLabel(color(0, 255, 200))
-
     .setPosition(10, 10)
     .setSize(100, 20)
     .setRange(15, 90)
     .setValue(25)
     ;
-
   cp5 = new ControlP5(this);
   cp5.addSlider("strokedim")
-
     .setColorForeground(color(0, 255, 200))
     .setColorActive(color(0, 255, 200))
     .setColorLabel(color(0, 255, 200))
@@ -74,7 +66,6 @@ void setup() {
     .setRange(0, 30)
     .setValue(1)
     ;
-
   cp5 = new ControlP5(this);
   cp5.addSlider("ellipsesize")
     .setColorForeground(color(0, 255, 200))
@@ -86,36 +77,24 @@ void setup() {
     .setRange(10, 300)
     .setValue(10)
     ;
-
   cp5.addToggle("doShowPoints")
     .setColorForeground(color(0, 255, 200))
     .setColorActive(color(0, 255, 200))
     .setColorValue(0)
     .setLabel("hide dots")
-
     .setColorLabel(color(0, 255, 200))
     .setPosition(190, 10)
     .setSize(20, 20)
     ;
-  cp5.addToggle("drawGradient")
-    .setColorForeground(color(0, 255, 200))
-    .setColorActive(color(0, 255, 200))
-    .setColorValue(0)
-    .setLabel("gradient")
-
-    .setColorLabel(color(0, 255, 200))
-    .setPosition(190, 60)
-    .setSize(20, 20)
-    ;
+  
   //clearVoronoi
   cp5.addToggle("drawOrganic")
     .setColorForeground(color(0, 255, 200))
     .setColorActive(color(0, 255, 200))
     .setColorValue(0)
     .setLabel("organic")
-
     .setColorLabel(color(0, 255, 200))
-    .setPosition(190, 105)
+    .setPosition(190, 60)
     .setSize(20, 20)
     ;
   cp5.addToggle("doClip")
@@ -123,20 +102,18 @@ void setup() {
     .setColorActive(color(0, 255, 200))
     .setColorValue(0)
     .setColorLabel(color(0, 255, 200))
-    .setPosition(190, 145)
+    .setPosition(190, 360)
     .setSize(20, 20)
     ;
-
   cp5.addButton("clearCanvas")
     .setColorForeground(color(0, 255, 200))
     .setColorActive(color(0, 255, 200))
     .setColorValue(1)
     .setLabel("clear")
     .setColorLabel(color(0, 255, 200))
-    .setPosition(190, 205)
+    .setPosition(190, 405)
     .setSize(20, 20)
     ;
-
 
 
   cp5.addToggle("doSave")
@@ -144,57 +121,69 @@ void setup() {
     .setColorActive(color(0, 255, 200))
     .setColorValue(0)
     .setLabel("SAVE AND CLOSE")
-
     .setColorLabel(color(0, 255, 200))
-    .setPosition(190, 295)
+    .setPosition(190, 555)
     .setSize(20, 20)
     ;
-  cp5 = new ControlP5(this);
-  cp5.addSlider("centerLimit")
+    cp5.addToggle("drawGradient")
     .setColorForeground(color(0, 255, 200))
     .setColorActive(color(0, 255, 200))
+    .setColorValue(0)
+    .setLabel("gradient")
     .setColorLabel(color(0, 255, 200))
-    .setColorValue(255)
-    .setPosition(10, 85)
-    .setSize(100, 20)
-    .setRange(20, 500)
-    .setValue(20)
+    .setPosition(10, 110)
+    .setSize(20, 20)
     ;
-
-
   cp5 = new ControlP5(this);
   cp5.addSlider("scalini")
     .setColorForeground(color(0, 255, 200))
     .setColorActive(color(0, 255, 200))
     .setColorLabel(color(0, 255, 200))
-    .setPosition(10, 110)
+    .setPosition(10, 150)
     .setSize(100, 20)
     .setRange(2, 100)
     .setValue(50)
     ;
-
-
   cp5 = new ControlP5(this);
   cp5.addSlider("inizio")
     .setColorForeground(color(0, 255, 200))
     .setColorActive(color(0, 255, 200))
     .setColorLabel(color(0, 255, 200))
-    .setPosition(10, 135)
+    .setPosition(10, 200)
     .setSize(100, 20)
     .setRange(0, 255)
     .setValue(0)
     ;
-
-
   cp5 = new ControlP5(this);
   cp5.addSlider("estremi")
     .setColorForeground(color(0, 255, 200))
     .setColorActive(color(0, 255, 200))
     .setColorLabel(color(0, 255, 200))
-    .setPosition(10, 160)
+    .setPosition(10, 175)
     .setSize(100, 20)
     .setRange(0, 255)
     .setValue(255)
+    ;
+  cp5.addButton("spirale")
+    .setColorForeground(color(0, 255, 200))
+    .setColorActive(color(0, 255, 200))
+    .setColorValue(1)
+    .setLabel("spirale")
+    .setColorLabel(color(0, 255, 200))
+    .setPosition(10, 255)
+    .setSize(20, 20)
+    ;
+  cp5 = new ControlP5(this);
+  cp5.addSlider("centerLimit")
+    .setLabel("dimensione spirale")
+    .setColorForeground(color(0, 255, 200))
+    .setColorActive(color(0, 255, 200))
+    .setColorLabel(color(0, 255, 200))
+    .setColorValue(255)
+    .setPosition(10, 285)
+    .setSize(100, 20)
+    .setRange(20, 500)
+    .setValue(20)
     ;
   object = new PVector(random(width), random(height));
   setupVoronoi(); // create your voronoi generator31
@@ -221,7 +210,7 @@ void mouseDragged() {
 
 void mousePressed() {
   mouseDragged();
-  if (key == '4') {
+  if (spirale) {
     theta=0; //reset theta 
     for (int k=0; k<centerLimit; k++) {     
       theta +=1;
