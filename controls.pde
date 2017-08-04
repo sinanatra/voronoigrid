@@ -1,74 +1,90 @@
 void mouseDragged() {
-  // organic shapes
-  if (drawOrganic) {
-    drawPoint(mouseX, mouseY, 0, 0, false);
-  } else {
-    drawPoint(mouseX, mouseY);
-  }
-}
-
-void mousePressed() {
-  mouseDragged();
-  if (spirale) {
+   if (spirale) {
     theta=0; //reset theta 
     for (int k=0; k<centerLimit; k++) {     
       theta +=1;
-      //One spiral in center with large-ish shapes
+      //One spiral in center with l1arge-ish shapes
       drawPoint(mouseX, mouseY, 3*theta/2, 3*theta/2);
     }
   }
+
+//  rect(clipBounds.x, clipBounds.y, clipBounds.width, clipBounds.height);
+
+
+  boolean stickToGrid = !drawOrganic;
+  if (drawSimmetric) {
+    // symmetric shape
+    drawSymmetricPoint(mouseX, mouseY, 0, 0, stickToGrid);
+  } else {
+    // free form
+    drawPoint(mouseX, mouseY, 0, 0, stickToGrid);
+  }
+}
+void mousePressed() {
+  // simmetric shapes
+   if (spirale) {
+    theta=0; //reset theta 
+    for (int k=0; k<centerLimit; k++) {     
+      theta +=1;
+      //One spiral in center with l1arge-ish shapes
+      drawPoint(mouseX, mouseY, 3*theta/2, 3*theta/2);
+    }
+  }
+
+  boolean stickToGrid = !drawOrganic;
+  if (drawSimmetric) {
+    // symmetric shape
+    drawSymmetricPoint(mouseX, mouseY, 0, 0, stickToGrid);
+  } else {
+    // free form
+    drawPoint(mouseX, mouseY, 0, 0, stickToGrid);
+  }
 }
 
-void keyPressed() {
+
+void keyPressed() {  
+  if (doSave) {
+    doSave=true;
+  }
   int limitone = 600; // variable to control the diameter of the spiral
-  if (key == '5') {
-    int k= 0;
-    for (k=0; k<limitone; k+=gridSize) {
-      drawPoint( k*1, k*1);
-      drawPoint( k*2, k*2);
-      drawPoint( k*2, k*3);
-      drawPoint( k*4, k*4);
-      drawPoint( k*5, k*5);
-    }
+
+  if (key == '1') {
+    drawPoint( random(300, 900), random(300, 300));
+    drawPoint( random(300, 900), random(300, 300));
+    drawPoint( random(300, 900), random(300, 300));
+
+    drawPoint( random(300, 900), random(450, 550));
+    drawPoint( random(300, 900), random(450, 550));
+    drawPoint( random(300, 900), random(450, 550));
+
+    drawPoint( random(300, 900), random(100, 100));    
+    drawPoint( random(300, 900), random(100, 100));
+    drawPoint( random(300, 900), random(100, 100));
+  }
+  if (key == '2') {
+    drawPoint( random(300, 900), random(100, 100));
+
+    drawPoint( random(300, 900), random(450, 550));
+
+
+    drawPoint( random(300, 900), random(300, 100));
   }
 
-  if (key == '6') {
+  if (key == '3') {
 
     int k= 0;
-    for (k=0; k<limitone; k+=gridSize) {
-      drawPoint( k*2, height/8);
-      drawPoint( k*2, height/7);
-      drawPoint( k*2, height/6);
-      drawPoint( k*2, height/5);
-      drawPoint( k*2, height/4);
-      drawPoint( height/8, k*2);
-      drawPoint( height/7, k*2);
-      drawPoint( height/6, k*2);
-      drawPoint( height/5, k*2);
-      drawPoint( height/4, k*2);
-    }
-  }
-
-  if (key == '7') {
-    int k= 0;
-    for (k=0; k<limitone; k+=gridSize) {
-      drawPoint( width/1, k*8);
-      drawPoint( width/width, k*8);
-    }
-  }
-  if (key == '8') {
-    int k= 0;
-    for (k=0; k<limitone; k+=gridSize) {
-      drawPoint( k*6, height/1);
-      drawPoint( k*6, height/height);
-    }
-  }
-  if (key == '8') {
-    int k= 0;
-    for (k=0; k<limitone; k+=gridSize) {
-      drawPoint( k*2, height/8);
-      drawPoint( k*2, height/7);
-      drawPoint( k*2, height/6);
+    for (k=0; k<width; k+=gridSize) {
+      drawPoint( k*3, 100);
+      drawPoint( k*2, 150);
+      drawPoint( k*3, 170);
+      //
+      drawPoint( k*3, 300);
+      drawPoint( k*2, 350);
+      drawPoint( k*3, 390);
+      //
+      drawPoint( k*3, 600);
+      drawPoint( k*2, 650);
+      drawPoint( k*3, 670);
     }
   }
 }
@@ -85,12 +101,12 @@ void drawPoint(float orgX, float orgY, float theta, float diameter, boolean stic
   point = point.getRotated(theta);
   point = point.add(new Vec2D(orgX, orgY));
   if (stickToGrid) {
-    Vec2D paddedOrigin = clipBounds.getTopLeft().add(padding);
-    point = point.sub(paddedOrigin);
+    Vec2D centroid = clipBounds.getCentroid();
+    point = point.sub(centroid);
     point = point.scale(1.0 / gridSize);
     point = new Vec2D(round(point.x), round(point.y));
     point = point.scale(gridSize);
-    point = point.add(paddedOrigin);
+    point = point.add(centroid);
   }
 
   Rect clipRect = new Rect(clipBounds.getTopLeft().add(padding), clipBounds.getBottomRight().sub(padding));
@@ -98,9 +114,18 @@ void drawPoint(float orgX, float orgY, float theta, float diameter, boolean stic
     return;
   }
   for (Vec2D existing : voronoi.getSites()) {
-    if (existing.x == point.x && existing.y == point.y) {
+    if (existing.equalsWithTolerance(point, 10)) {
       return;
     }
   }
   voronoi.addPoint(point);
+}
+
+void drawSymmetricPoint(float orgX, float orgY) {
+  drawSymmetricPoint(orgX, orgY, 0, 0, true);
+}
+void drawSymmetricPoint(float orgX, float orgY, float theta, float diameter, boolean stickToGrid) {
+  drawPoint(orgX, orgY, theta, diameter, stickToGrid);
+  float axis = clipBounds.x + clipBounds.width / 2;
+  drawPoint(2 * axis - orgX, orgY, PI - theta, diameter, stickToGrid);
 }

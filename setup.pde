@@ -7,7 +7,7 @@ void setupControls() {
     .setPosition(10, 10)
     .setSize(100, 20)
     .setRange(15, 90)
-    .setValue(25)
+    .setValue(45)
     ;
   cp5 = new ControlP5(this);
   cp5.addSlider("strokedim")
@@ -35,13 +35,12 @@ void setupControls() {
     .setColorForeground(color(0, 255, 200))
     .setColorActive(color(0, 255, 200))
     .setColorValue(0)
-    .setLabel("hide dots")
+    .setLabel("ellipse visible")
     .setColorLabel(color(0, 255, 200))
     .setPosition(190, 10)
     .setSize(20, 20)
     ;
 
-  //clearVoronoi
   cp5.addToggle("drawOrganic")
     .setColorForeground(color(0, 255, 200))
     .setColorActive(color(0, 255, 200))
@@ -49,6 +48,24 @@ void setupControls() {
     .setLabel("organic")
     .setColorLabel(color(0, 255, 200))
     .setPosition(190, 60)
+    .setSize(20, 20)
+    ;
+  cp5.addToggle("drawSimmetric")
+    .setColorForeground(color(0, 255, 200))
+    .setColorActive(color(0, 255, 200))
+    .setColorValue(0)
+    .setLabel("Simmetric")
+    .setColorLabel(color(0, 255, 200))
+    .setPosition(220, 60)
+    .setSize(20, 20)
+    ;
+  cp5.addToggle("randomstroke")
+    .setColorForeground(color(0, 255, 200))
+    .setColorActive(color(0, 255, 200))
+    .setColorValue(0)
+    .setLabel("random stroke weight")
+    .setColorLabel(color(0, 255, 200))
+    .setPosition(190, 100)
     .setSize(20, 20)
     ;
   cp5.addToggle("doClip")
@@ -66,18 +83,18 @@ void setupControls() {
     .setLabel("clear")
     .setColorLabel(color(0, 255, 200))
     .setPosition(190, 405)
-    .setSize(20, 20)
+    .setSize(50, 20)
     ;
 
 
-  cp5.addToggle("doSave")
+  cp5.addButton("doSave")
     .setColorForeground(color(0, 255, 200))
     .setColorActive(color(0, 255, 200))
     .setColorValue(0)
-    .setLabel("SAVE AND CLOSE")
+    .setLabel("SAVE")
     .setColorLabel(color(0, 255, 200))
     .setPosition(190, 555)
-    .setSize(20, 20)
+    .setSize(50, 50)
     ;
   cp5.addToggle("drawGradient")
     .setColorForeground(color(0, 255, 200))
@@ -86,6 +103,25 @@ void setupControls() {
     .setLabel("gradient")
     .setColorLabel(color(0, 255, 200))
     .setPosition(10, 110)
+    .setSize(20, 20)
+    ;
+  cp5 = new ControlP5(this);
+  cp5.addToggle("HSL")
+    .setColorForeground(color(0, 255, 200))
+    .setColorActive(color(0, 255, 200))
+    .setColorValue(0)
+    .setLabel("hsl")
+    .setColorLabel(color(0, 255, 200))
+    .setPosition(60, 110)
+    .setSize(20, 20)
+    ;
+  cp5.addToggle("randomColorMode")
+    .setColorForeground(color(0, 255, 200))
+    .setColorActive(color(0, 255, 200))
+    .setColorValue(1)
+    .setLabel("random col")
+    .setColorLabel(color(0, 255, 200))
+    .setPosition(90, 110)
     .setSize(20, 20)
     ;
   cp5 = new ControlP5(this);
@@ -99,15 +135,7 @@ void setupControls() {
     .setValue(50)
     ;
   cp5 = new ControlP5(this);
-  cp5.addSlider("inizio")
-    .setColorForeground(color(0, 255, 200))
-    .setColorActive(color(0, 255, 200))
-    .setColorLabel(color(0, 255, 200))
-    .setPosition(10, 200)
-    .setSize(100, 20)
-    .setRange(0, 255)
-    .setValue(0)
-    ;
+
   cp5 = new ControlP5(this);
   cp5.addSlider("estremi")
     .setColorForeground(color(0, 255, 200))
@@ -115,16 +143,44 @@ void setupControls() {
     .setColorLabel(color(0, 255, 200))
     .setPosition(10, 175)
     .setSize(100, 20)
-    .setRange(0, 255)
+    .setRange(0, 360)
     .setValue(255)
+    ;  
+  cp5.addSlider("inizio")
+    .setColorForeground(color(0, 255, 200))
+    .setColorActive(color(0, 255, 200))
+    .setColorLabel(color(0, 255, 200))
+    .setPosition(10, 200)
+    .setSize(100, 20)
+    .setRange(0, 360)
+    .setValue(0)
     ;
+  cp5.addSlider("bright")
+    .setColorForeground(color(0, 255, 200))
+    .setColorActive(color(0, 255, 200))
+    .setColorLabel(color(0, 255, 200))
+    .setPosition(10, 225)
+    .setSize(100, 20)
+    .setRange(0, 100)
+    .setValue(50)
+    ;
+  cp5.addSlider("satura")
+    .setColorForeground(color(0, 255, 200))
+    .setColorActive(color(0, 255, 200))
+    .setColorLabel(color(0, 255, 200))
+    .setPosition(10, 250)
+    .setSize(100, 20)
+    .setRange(0, 100)
+    .setValue(50)
+    ;
+
   cp5.addButton("spirale")
     .setColorForeground(color(0, 255, 200))
     .setColorActive(color(0, 255, 200))
     .setColorValue(1)
     .setLabel("spirale")
     .setColorLabel(color(0, 255, 200))
-    .setPosition(10, 255)
+    .setPosition(10, 455)
     .setSize(20, 20)
     ;
   cp5 = new ControlP5(this);
@@ -134,7 +190,7 @@ void setupControls() {
     .setColorActive(color(0, 255, 200))
     .setColorLabel(color(0, 255, 200))
     .setColorValue(255)
-    .setPosition(10, 285)
+    .setPosition(10, 485)
     .setSize(100, 20)
     .setRange(20, 500)
     .setValue(20)
