@@ -30,6 +30,10 @@ boolean randomColorMode;
 boolean doClip=true;
 boolean doShowHelp=true;
 boolean doShowDelaunay;
+boolean strokeGradient;
+boolean backgroundImage;
+boolean Rect;
+boolean bw;
 //  polygon clipper
 SutherlandHodgemanClipper clip;
 int PointsColor = 0; // color circle
@@ -41,6 +45,7 @@ int theta = 20; // for increasing spiral
 int ellipsesize= 10;
 int scalini =50; // gradient steps
 int sliderValue = 100;
+PImage bg;
 
 float inizio= 255;
 float estremi= 255;
@@ -59,6 +64,8 @@ void setup() {
   doClip=true;
   setupControls();
   background(255);
+  bg = loadImage("img/test2.jpg");
+
   rect(clipBounds.x, clipBounds.y, clipBounds.width, clipBounds.height);
   setupVoronoi(); // create your voronoi generator31
 }
@@ -68,6 +75,9 @@ void draw() {
   strokeJoin(BEVEL);
   background(255);
 
+  if (backgroundImage) {
+    background(bg);
+  }
   if (voronoi.getSites().size() == 0) {
     rect(clipBounds.x, clipBounds.y, clipBounds.width, clipBounds.height);
   }
