@@ -28,10 +28,24 @@ void mousePressed() {
 }
 
 void keyPressed() {
+
+
   if (doSave) {
     doSave=true;
   }
-
+  if (key == '!') {
+    int k= 0;
+    for (k=0; k<width; k+=gridSize) {
+      drawPoint( k, random(100, 400));
+      drawPoint( k, random(100, 400));
+      //
+      drawPoint( k, random(350, 400));
+      drawPoint( k, random(350, 400));
+      //
+      drawPoint( k, random(350, 650));
+      drawPoint( k, random(350, 650));
+    }
+  }
   if (key == '1') {
     int k= 0;
     for (k=0; k<width; k+=gridSize) {
@@ -48,7 +62,7 @@ void keyPressed() {
   if (key == '2') {
     int k= 0;
     for (k=0; k<height; k+=gridSize) {
-    //  drawPoint((clipBounds.x+clipBounds.x/2.2), k);
+      //  drawPoint((clipBounds.x+clipBounds.x/2.2), k);
       drawPoint((clipBounds.x+clipBounds.x/4.5), k);
       drawPoint((clipBounds.x+clipBounds.x/1.2), k);
     }
@@ -120,6 +134,7 @@ void drawSymmetricPoint(float orgX, float orgY) {
   drawSymmetricPoint(orgX, orgY, 0, 0, true);
 }
 void drawSymmetricPoint(float orgX, float orgY, float theta, float diameter, boolean stickToGrid) {
+
   drawPoint(orgX, orgY, theta, diameter, stickToGrid);
   float axis = clipBounds.x + clipBounds.width / 2;
   drawPoint(2 * axis - orgX, orgY, PI - theta, diameter, stickToGrid);

@@ -6,7 +6,7 @@ void setupControls() {
     .setColorLabel(color(0, 255, 200))
     .setPosition(10, 10)
     .setSize(100, 20)
-    .setRange(5, 130)
+    .setRange(10, 130)
     .setValue(45)
     ;
   cp5 = new ControlP5(this);
@@ -148,7 +148,7 @@ void setupControls() {
     .setPosition(10, 110)
     .setSize(20, 20)
     ; 
-  
+
   cp5.addToggle("bw")
     .setColorForeground(color(0, 255, 200))
     .setColorActive(color(0, 255, 200))
@@ -168,6 +168,7 @@ void setupControls() {
     .setPosition(50, 110)
     .setSize(20, 20)
     ;
+
   cp5.addToggle("randomColorMode")
     .setColorForeground(color(0, 255, 200))
     .setColorActive(color(0, 255, 200))
@@ -177,6 +178,7 @@ void setupControls() {
     .setPosition(75, 110)
     .setSize(20, 20)
     ;
+
   cp5.addToggle("strokeGradient")
     .setColorForeground(color(0, 255, 200))
     .setColorActive(color(0, 255, 200))
@@ -233,7 +235,28 @@ void setupControls() {
     .setRange(0, 100)
     .setValue(50)
     ;
+  cp5.addSlider("adjustWidth")
+    .setColorForeground(color(0, 255, 200))
+    .setColorActive(color(0, 255, 200))
+    .setColorLabel(color(0, 255, 200))
+    .setPosition(10, 300)
+    .setSize(100, 20)
+    .setRange(50, 450)
+    .setValue(200)
+    .setLabel("Width")
 
+    ;
+  cp5.addSlider("adjustHeight")
+    .setColorForeground(color(0, 255, 200))
+    .setColorActive(color(0, 255, 200))
+    .setColorLabel(color(0, 255, 200))
+    .setPosition(10, 330)
+    .setSize(100, 20)
+    .setRange(50, 700)
+    .setValue(650)
+    .setLabel("Heigth")
+
+    ;
   //SPIRAL
   /*
    cp5.addButton("spirale")
@@ -260,6 +283,7 @@ void setupControls() {
 }
 
 void setupVoronoi() {
+
   smooth();
   // focus x positions around horizontal center (w/ 33% standard deviation)
   xpos=new BiasedFloatRange(0, width, width/2, 0.333f);

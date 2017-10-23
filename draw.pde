@@ -1,4 +1,5 @@
 void drawVoronoi() {
+
   //rect(0, 0, width, height);
   stroke(lines);
   noFill();
@@ -27,6 +28,8 @@ void drawVoronoi() {
       b = 100;
       s = 100;
       c=100;
+
+      ///
     }
     float step = 1.0 / numeroScalini;
     for (float i = 1; i > 0; i -= step) {
@@ -40,7 +43,12 @@ void drawVoronoi() {
       float brightness = i * (b - s) + s;
       float saturation = i * (c - s) + s;
 
+
+
+
+
       if (HSL==true) {
+
         strokeWeight(0);    // use strokedim for same size, weight changes by the area
         colorMode(HSB, 360, 100, 100);
         fill(colore, brightness, saturation);
@@ -106,25 +114,32 @@ void drawVoronoi() {
       strokeWeight(0);
       // float size = pow(cos(poly.getArea()), 2) * (40 - 5) + 5;
 
-      float size = pow(cos(poly.getCircumference()), 2) * (20 - 5) + 5;
+      float size = pow(cos(poly.getCircumference()), 2) * ((ellipsesize+20) - 5) + ellipsesize ;
+      //float size = pow(cos(poly.getCircumference()), 2) * ((20) - 5) +5 ;
+
       if (randomEllipse) {
-        strokeWeight(ellipsesize);
+        fill(color(0, 255, 200));
         ellipse(centro.x, centro.y, size, size);
       } else if (Rect) {
         rectMode(CENTER);  // Set rectMode to CENTER
-        fill(255, 255, 0);
+        fill(color(0, 255, 200));
         noStroke();
         rect(centro.x, centro.y, ellipsesize, ellipsesize);
       } else {
         noStroke();
+        fill(color(0, 255, 200));
+
         ellipse(centro.x, centro.y, ellipsesize, ellipsesize);
       }
     }
   }  
 
   if (clearCanvas) {
+
     voronoi = new Voronoi();
     clearCanvas = false;
+    background(255);
+    strokeWeight(1);
 
     rect(clipBounds.x, clipBounds.y, clipBounds.width, clipBounds.height);
   }

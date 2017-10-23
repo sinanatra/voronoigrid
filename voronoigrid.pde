@@ -1,6 +1,5 @@
-// Giacomo Nanni
-// www.giacomonanni.it
-
+/* Visual Identity for the Academy of Fine Arts of Bologna
+ giacomonanni.it */
 import java.util.List;
 import processing.pdf.*;
 import toxi.geom.*;
@@ -21,7 +20,8 @@ boolean clearCanvas;
 boolean clearVoronoi;
 boolean drawOrganic;
 boolean drawSimmetric;
-boolean drawGradient = false;
+boolean drawGradient;
+boolean color_RGB;
 boolean randomstroke;
 boolean randomEllipse;
 boolean doShowLines=true;
@@ -45,8 +45,9 @@ int theta = 20; // for increasing spiral
 int ellipsesize= 10;
 int scalini =50; // gradient steps
 int sliderValue = 100;
+int adjustWidth ;
+int adjustHeight;
 PImage bg;
-
 float inizio= 255;
 float estremi= 255;
 float bright=100;
@@ -57,37 +58,52 @@ Slider abc;
 FloatRange xpos, ypos;// ranges for x/y positions of points
 ToxiclibsSupport gfx;// helper class for rendering
 Voronoi voronoi = new Voronoi();// empty voronoi mesh container
-Rect clipBounds = new Rect(375, 30, 400, 680);// rectangle that clips everything
+
+Rect clipBounds = new Rect(375, 30, adjustWidth, adjustHeight /*280*/);// rectangle that clips everything
 
 void setup() {
   size(850, 750, P2D);
+
   doClip=true;
   setupControls();
-  background(255);
   bg = loadImage("img/test2.jpg");
 
   rect(clipBounds.x, clipBounds.y, clipBounds.width, clipBounds.height);
+
   setupVoronoi(); // create your voronoi generator31
 }
 
 void draw() {
+clipBounds.width = adjustWidth;
+clipBounds.height = adjustHeight;
 
+
+  if (doSave) {
+    doSave=true;
+  }
   strokeJoin(BEVEL);
-  background(255);
+  background(250);
 
   if (backgroundImage) {
     background(bg);
+  }
+  if (voronoi.getSites().size() > 0) {
+    noFill();
+    rect(clipBounds.x, clipBounds.y, clipBounds.width, clipBounds.height);
   }
   if (voronoi.getSites().size() == 0) {
     rect(clipBounds.x, clipBounds.y, clipBounds.width, clipBounds.height);
   }
   if (doSave) {
+    beginRecord(PDF, "everything.pdf");
+
     beginRaw(PDF, "output/ababo-####.pdf");
   }
   drawVoronoi(); //renders
 
   if (doSave) {
     endRaw();
+    endRecord();
     doSave = false;
   }
 }
