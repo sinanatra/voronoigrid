@@ -76,7 +76,7 @@ void setupControls() {
     .setPosition(190, 100)
     .setSize(20, 20)
     ;
-  cp5.addToggle("doShowDelaunay")
+ /* cp5.addToggle("doShowDelaunay")
     .setColorForeground(color(0, 255, 200))
     .setColorActive(color(0, 255, 200))
     .setColorValue(0)
@@ -85,6 +85,7 @@ void setupControls() {
     .setPosition(190, 135)
     .setSize(20, 20)
     ;
+    */
   cp5.addToggle("Rect")
     .setColorForeground(color(0, 255, 200))
     .setColorActive(color(0, 255, 200))
@@ -242,7 +243,7 @@ void setupControls() {
     .setPosition(10, 300)
     .setSize(100, 20)
     .setRange(50, 450)
-    .setValue(200)
+    .setValue(300)
     .setLabel("Width")
 
     ;
@@ -253,7 +254,7 @@ void setupControls() {
     .setPosition(10, 330)
     .setSize(100, 20)
     .setRange(50, 700)
-    .setValue(650)
+    .setValue(700)
     .setLabel("Heigth")
 
     ;

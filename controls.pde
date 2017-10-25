@@ -48,46 +48,22 @@ void keyPressed() {
   }
   if (key == '1') {
     int k= 0;
+  
     for (k=0; k<width; k+=gridSize) {
-      drawPoint( k, 100);
-      drawPoint( k, 200);
-      //
-      drawPoint( k, 350);
-      drawPoint(k, 450);
-      //
-      drawPoint( k, 650);
+      drawPoint( k,  clipBounds.y + adjustHeight - gridSize);
     }
   }
+
 
   if (key == '2') {
     int k= 0;
-    for (k=0; k<height; k+=gridSize) {
-      //  drawPoint((clipBounds.x+clipBounds.x/2.2), k);
-      drawPoint((clipBounds.x+clipBounds.x/4.5), k);
-      drawPoint((clipBounds.x+clipBounds.x/1.2), k);
-    }
-  }
-  if (key == '3') {
-    //  rect(clipBounds.x, clipBounds.y, clipBounds.width, clipBounds.height);
 
-    int k= 0;
     for (k=0; k<width; k+=gridSize) {
-      drawPoint(k, clipBounds.height/2);
+      drawPoint(  clipBounds.x + adjustWidth - gridSize, k);
     }
   }
-  if (key == '4') {
-    int k= 0;
-    for (k=0; k<height; k+=gridSize) {
-      drawPoint((clipBounds.x+clipBounds.x/2), k);
-    }
-  }
-  if (key == '5') {
-    int k= 0;
-    for (k=0; k<width; k+=gridSize) {
-      drawPoint(k, clipBounds.height);
-      drawPoint(k, clipBounds.height/9);
-    }
-  }
+
+
   if (key =='s') {
     theta=0; //reset theta
     for (int k=0; k<centerLimit; k++) {
