@@ -1,3 +1,6 @@
+A Processing app for the redesign of the Academy of Fine Arts in Bologna.
+
+
 ![ScreenShot](http://68.media.tumblr.com/daa5494aa76196970d013c0dd14a1c73/tumblr_ouj5glYG2t1vjugrho1_1280.png)
 
 
