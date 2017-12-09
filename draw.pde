@@ -28,8 +28,8 @@ void drawVoronoi() {
       b = 100;
       s = 100;
       c=100;
-
       ///
+      noFill();
     }
     float step = 1.0 / numeroScalini;
     for (float i = 1; i > 0; i -= step) {
@@ -69,11 +69,15 @@ void drawVoronoi() {
         noFill();
         strokeWeight(strokedim);    // use strokedim for same size, weight changes by the area
       }
-      if (HSL==false && bw== false) {
+      if (HSL==false && RGBmode == true && bw == true) {
         colorMode(RGB, 255, 255, 255);
         fill(colore, colore, colore);
         noStroke();
-        noFill();
+      } 
+      if (HSL==false && RGBmode == true && bw == false ) {
+        colorMode(RGB, 255, 255, 255);
+        fill(colore, brightness, saturation);
+        noStroke();
       } 
       if (doClip) {
         scalato = clip.clipPolygon(scalato);
@@ -107,6 +111,11 @@ void drawVoronoi() {
     }
 
     stroke(0);
+    if (backgroundImage) {
+      colorMode(HSB, 360, 100, 100);
+
+      stroke(colors[6]);
+    }
     // draw  points added to voronoi
     gfx.polygon2D(fullPoly);
     fill(PointsColor);
@@ -116,20 +125,48 @@ void drawVoronoi() {
 
       float size = pow(cos(poly.getCircumference()), 2) * ((ellipsesize+20) - 5) + ellipsesize ;
       //float size = pow(cos(poly.getCircumference()), 2) * ((20) - 5) +5 ;
+      if ( randomEllipse) {
 
+        fill(colors[0]);          // Set the SVG fill to white
+
+        ellipse(centro.x, centro.y, size, size);
+      }
       if (randomEllipse) {
         fill(color(0, 255, 200));
         ellipse(centro.x, centro.y, size, size);
+        if (backgroundImage && randomEllipse) {
+
+          fill(colors[0]);          // Set the SVG fill to white
+
+          ellipse(centro.x, centro.y, size, size);
+        }
       } else if (Rect) {
         rectMode(CENTER);  // Set rectMode to CENTER
         fill(color(0, 255, 200));
         noStroke();
         rect(centro.x, centro.y, ellipsesize, ellipsesize);
+
+        if (backgroundImage && Rect) {
+
+
+          rectMode(CENTER);  // Set rectMode to CENTER
+          fill(colors[0]);          // Set the SVG fill to white
+          noStroke();
+          rect(centro.x, centro.y, ellipsesize, ellipsesize);
+        }
       } else {
         noStroke();
         fill(color(0, 255, 200));
-
         ellipse(centro.x, centro.y, ellipsesize, ellipsesize);
+
+        if (backgroundImage) {
+
+          fill(colors[0]);          // Set the SVG fill to white
+
+          ellipse(centro.x, centro.y, ellipsesize, ellipsesize);
+        } else {
+          colorMode(RGB, 255, 255, 255);
+        }
       }
     }
   }  
@@ -140,6 +177,7 @@ void drawVoronoi() {
     clearCanvas = false;
     background(255);
     strokeWeight(1);
+    Rect clipBounds = new Rect(375, 30, adjustWidth, adjustHeight /*280*/);// rectangle that clips everything
 
     rect(clipBounds.x, clipBounds.y, clipBounds.width, clipBounds.height);
   }

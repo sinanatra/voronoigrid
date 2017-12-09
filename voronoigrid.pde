@@ -8,7 +8,15 @@ import toxi.util.*;
 import toxi.util.datatypes.*;
 import toxi.processing.*;
 import controlP5.*;
-
+import generativedesign.*;
+import processing.pdf.*;
+import java.util.Calendar;
+boolean savePDF = false;
+PImage img; 
+color[] colors;
+String sortMode = null; 
+PShape fama;
+PShape pattern;
 int fontend = 8;
 int nchars = 0;
 boolean record;
@@ -26,6 +34,7 @@ boolean randomstroke;
 boolean randomEllipse;
 boolean doShowLines=true;
 boolean HSL;
+boolean RGBmode = false;
 boolean randomColorMode;
 boolean doClip=true;
 boolean doShowHelp=true;
@@ -53,6 +62,7 @@ float estremi= 255;
 float bright=100;
 float sat=100;
 float satura=100;
+
 ControlP5 cp5;
 Slider abc;
 FloatRange xpos, ypos;// ranges for x/y positions of points
@@ -66,7 +76,9 @@ void setup() {
 
   doClip=true;
   setupControls();
-  bg = loadImage("img/test2.jpg");
+
+  bg = loadImage("img/pic3.jpg");
+  bg.resize(0, width);
 
   rect(clipBounds.x, clipBounds.y, clipBounds.width, clipBounds.height);
 
@@ -74,19 +86,35 @@ void setup() {
 }
 
 void draw() {
-clipBounds.width = adjustWidth;
-clipBounds.height = adjustHeight;
+  background(255);
+  clipBounds.width = adjustWidth;
+  clipBounds.height = adjustHeight;
 
 
   if (doSave) {
     doSave=true;
   }
-  strokeJoin(BEVEL);
-  background(250);
 
-  if (backgroundImage) {
-    background(bg);
+  strokeJoin(BEVEL);
+  int tileCount = 3; 
+
+  float rectSize = width / float(tileCount); 
+  int i = 0; 
+  colors = new color[tileCount*tileCount]; 
+
+  for (int gridY=0; gridY<tileCount; gridY++) {
+    for (int gridX=0; gridX<tileCount; gridX++) {
+      int px = (int) (gridX * rectSize); 
+      int py = (int) (gridY * rectSize); 
+      colors[i] = bg.get(px, py);
+      i++;
+    }
   }
+  // sort colors
+  sortMode = GenerativeDesign.HUE;
+  if (sortMode != null) colors = GenerativeDesign.sortColors(this, colors, sortMode); 
+
+
   if (voronoi.getSites().size() > 0) {
     noFill();
     rect(clipBounds.x, clipBounds.y, clipBounds.width, clipBounds.height);
@@ -95,7 +123,7 @@ clipBounds.height = adjustHeight;
     rect(clipBounds.x, clipBounds.y, clipBounds.width, clipBounds.height);
   }
   if (doSave) {
-    beginRecord(PDF, "everything.pdf");
+    // beginRecord(PDF, "everything.pdf");
 
     beginRaw(PDF, "output/ababo-####.pdf");
   }
@@ -103,7 +131,7 @@ clipBounds.height = adjustHeight;
 
   if (doSave) {
     endRaw();
-    endRecord();
+    //endRecord();
     doSave = false;
   }
 }
