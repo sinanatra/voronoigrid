@@ -99,10 +99,8 @@ void drawVoronoi() {
     if (doClip) {
       fullPoly = clip.clipPolygon(fullPoly);
     }
-    if (doShowDelaunay /*&&(!doClip || clip.getBounds().containsPoint(centro)) */) {
-      
-     
-      stroke(colorscheme);
+    if (doShowDelaunay &&(!doClip || clip.getBounds().containsPoint(centro))) {
+      stroke(255, 0, 0);
       strokeWeight(strokedim);    // use strokedim for same size, weight changes by the area
 
       beginShape(TRIANGLES);
@@ -134,7 +132,7 @@ void drawVoronoi() {
         ellipse(centro.x, centro.y, size, size);
       }
       if (randomEllipse) {
-        fill(colorscheme);
+        fill(color(0, 255, 200));
         ellipse(centro.x, centro.y, size, size);
         if (backgroundImage && randomEllipse) {
 
@@ -144,7 +142,7 @@ void drawVoronoi() {
         }
       } else if (Rect) {
         rectMode(CENTER);  // Set rectMode to CENTER
-        fill(colorscheme);
+        fill(color(0, 255, 200));
         noStroke();
         rect(centro.x, centro.y, ellipsesize, ellipsesize);
 
@@ -158,7 +156,7 @@ void drawVoronoi() {
         }
       } else {
         noStroke();
-        fill(colorscheme);
+        fill(color(0, 255, 200));
         ellipse(centro.x, centro.y, ellipsesize, ellipsesize);
 
         if (backgroundImage) {

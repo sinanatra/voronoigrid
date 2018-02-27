@@ -14,11 +14,8 @@ import java.util.Calendar;
 boolean savePDF = false;
 PImage img; 
 color[] colors;
-color colorscheme = #cccccc;
-color backgroundcolor = #000000;
-
 String sortMode = null; 
-//PShape fama;
+PShape fama;
 PShape pattern;
 int fontend = 8;
 int nchars = 0;
@@ -55,7 +52,7 @@ int strokedim=1; // change this for strokeweight
 int centerLimit = 20; // spiral diameter
 int theta = 20; // for increasing spiral
 int ellipsesize= 10;
-int scalini = 50; // gradient steps
+int scalini =50; // gradient steps
 int sliderValue = 100;
 int adjustWidth ;
 int adjustHeight;
@@ -65,7 +62,6 @@ float estremi= 255;
 float bright=100;
 float sat=100;
 float satura=100;
-
 
 ControlP5 cp5;
 Slider abc;
