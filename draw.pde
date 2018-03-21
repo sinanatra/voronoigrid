@@ -20,7 +20,7 @@ void drawVoronoi() {
     int numeroScalini = scalini;
     strokeWeight(0);
 
-    if (!drawGradient ) {
+    if (!HSL ) {
       strokeWeight(0);
       numeroScalini = 1;
       start = 255;
@@ -49,12 +49,14 @@ void drawVoronoi() {
 
 
 
-      if (HSL==true && drawGradient ) {
+      if (HSL==true ) {
 
         strokeWeight(0);    // use strokedim for same size, weight changes by the area
         colorMode(HSB, 360, 100, 100);
         fill(colore, brightness, saturation);
+        doShowPoints = false;
       }
+
       if (randomColorMode) {
         colorMode(HSB, 860, 100, 100);
         strokeWeight(0);    // use strokedim for same size, weight changes by the area
@@ -66,7 +68,7 @@ void drawVoronoi() {
         strokeWeight(1);    // use strokedim for same size, weight changes by the area
       }
 
-      if (bw && drawGradient) {
+      if (bw ) {
         colorMode(RGB, 255, 255, 255);
         noFill();
         strokeWeight(strokedim);    // use strokedim for same size, weight changes by the area
@@ -75,16 +77,15 @@ void drawVoronoi() {
           strokeWeight(strokedim);    // use strokedim for same size, weight changes by the area
         }
       }
-      if (HSL==false && RGBmode == true && bw == true && drawGradient) {
+      if (HSL==true &&  RGBmode == true ) {
         colorMode(RGB, 255, 255, 255);
         fill(colore, colore, colore);
-        noStroke();
+        doShowPoints = false;
+        if (strokeGradient==true) {
+          strokeWeight(1);    // use strokedim for same size, weight changes by the area
+        }
       } 
-      if (HSL==false && RGBmode == true && bw == false ) {
-        colorMode(RGB, 255, 255, 255);
-        fill(colore, brightness, saturation);
-        noStroke();
-      } 
+
       if (doClip) {
         scalato = clip.clipPolygon(scalato);
       }

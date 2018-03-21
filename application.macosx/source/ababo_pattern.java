@@ -24,7 +24,7 @@ import java.io.InputStream;
 import java.io.OutputStream; 
 import java.io.IOException; 
 
-public class voronoigrid extends PApplet {
+public class ababo_pattern extends PApplet {
 
 /* Visual Identity for the Academy of Fine Arts of Bologna
  giacomonanni.it */
@@ -42,8 +42,11 @@ public class voronoigrid extends PApplet {
 boolean savePDF = false;
 PImage img; 
 int[] colors;
+int colorscheme = 0xffcccccc;
+int backgroundcolor = 0xff000000;
+
 String sortMode = null; 
-PShape fama;
+//PShape fama;
 PShape pattern;
 int fontend = 8;
 int nchars = 0;
@@ -80,7 +83,7 @@ int strokedim=1; // change this for strokeweight
 int centerLimit = 20; // spiral diameter
 int theta = 20; // for increasing spiral
 int ellipsesize= 10;
-int scalini =50; // gradient steps
+int scalini = 50; // gradient steps
 int sliderValue = 100;
 int adjustWidth ;
 int adjustHeight;
@@ -90,6 +93,7 @@ float estremi= 255;
 float bright=100;
 float sat=100;
 float satura=100;
+
 
 ControlP5 cp5;
 Slider abc;
@@ -105,8 +109,8 @@ public void setup() {
   doClip=true;
   setupControls();
 
-  bg = loadImage("img/pic3.jpg");
-  bg.resize(0, width);
+ // bg = loadImage("img/pic3.jpg");
+  //bg.resize(0, width);
 
   rect(clipBounds.x, clipBounds.y, clipBounds.width, clipBounds.height);
 
@@ -134,7 +138,7 @@ public void draw() {
     for (int gridX=0; gridX<tileCount; gridX++) {
       int px = (int) (gridX * rectSize); 
       int py = (int) (gridY * rectSize); 
-      colors[i] = bg.get(px, py);
+   //   colors[i] = bg.get(px, py);
       i++;
     }
   }
@@ -302,7 +306,7 @@ public void drawVoronoi() {
     int numeroScalini = scalini;
     strokeWeight(0);
 
-    if (!drawGradient) {
+    if (!drawGradient ) {
       strokeWeight(0);
       numeroScalini = 1;
       start = 255;
@@ -313,6 +317,8 @@ public void drawVoronoi() {
       ///
       noFill();
     }
+
+
     float step = 1.0f / numeroScalini;
     for (float i = 1; i > 0; i -= step) {
 
@@ -329,7 +335,7 @@ public void drawVoronoi() {
 
 
 
-      if (HSL==true) {
+      if (HSL==true && drawGradient ) {
 
         strokeWeight(0);    // use strokedim for same size, weight changes by the area
         colorMode(HSB, 360, 100, 100);
@@ -346,12 +352,16 @@ public void drawVoronoi() {
         strokeWeight(1);    // use strokedim for same size, weight changes by the area
       }
 
-      if (bw) {
+      if (bw && drawGradient) {
         colorMode(RGB, 255, 255, 255);
         noFill();
         strokeWeight(strokedim);    // use strokedim for same size, weight changes by the area
+        strokeWeight(0);
+        if (doShowLines) {
+          strokeWeight(strokedim);    // use strokedim for same size, weight changes by the area
+        }
       }
-      if (HSL==false && RGBmode == true && bw == true) {
+      if (HSL==false && RGBmode == true && bw == true && drawGradient) {
         colorMode(RGB, 255, 255, 255);
         fill(colore, colore, colore);
         noStroke();
@@ -381,9 +391,11 @@ public void drawVoronoi() {
     if (doClip) {
       fullPoly = clip.clipPolygon(fullPoly);
     }
-    if (doShowDelaunay &&(!doClip || clip.getBounds().containsPoint(centro))) {
-      stroke(255, 0, 0);
-      strokeWeight(strokedim);    // use strokedim for same size, weight changes by the area
+    if (doShowDelaunay &&(!doClip || clip.getBounds().containsPoint(centro)) ) {
+
+      stroke(colorscheme);
+      strokeWeight(1);  
+
 
       beginShape(TRIANGLES);
       for (Triangle2D t : voronoi.getTriangles()) {
@@ -414,7 +426,7 @@ public void drawVoronoi() {
         ellipse(centro.x, centro.y, size, size);
       }
       if (randomEllipse) {
-        fill(color(0, 255, 200));
+        fill(colorscheme);
         ellipse(centro.x, centro.y, size, size);
         if (backgroundImage && randomEllipse) {
 
@@ -424,7 +436,7 @@ public void drawVoronoi() {
         }
       } else if (Rect) {
         rectMode(CENTER);  // Set rectMode to CENTER
-        fill(color(0, 255, 200));
+        fill(colorscheme);
         noStroke();
         rect(centro.x, centro.y, ellipsesize, ellipsesize);
 
@@ -438,7 +450,7 @@ public void drawVoronoi() {
         }
       } else {
         noStroke();
-        fill(color(0, 255, 200));
+        fill(colorscheme);
         ellipse(centro.x, centro.y, ellipsesize, ellipsesize);
 
         if (backgroundImage) {
@@ -476,10 +488,13 @@ public Vec2D getCenter(Polygon2D polygon) {
 }
 public void setupControls() {
   cp5 = new ControlP5(this);
+  cp5.setColorBackground(backgroundcolor);
+
   cp5.addSlider("gridSize")
-    .setColorForeground(color(0, 255, 200))
-    .setColorActive(color(0, 255, 200))
-    .setColorLabel(color(0, 255, 200))
+    .setColorBackground(backgroundcolor)
+    .setColorForeground(colorscheme)
+    .setColorActive(colorscheme)
+    .setColorLabel(colorscheme)
     .setPosition(10, 10)
     .setSize(100, 20)
     .setRange(10, 130)
@@ -487,9 +502,10 @@ public void setupControls() {
     ;
   cp5 = new ControlP5(this);
   cp5.addSlider("strokedim")
-    .setColorForeground(color(0, 255, 200))
-    .setColorActive(color(0, 255, 200))
-    .setColorLabel(color(0, 255, 200))
+  
+    .setColorForeground(colorscheme)
+    .setColorActive(colorscheme)
+    .setColorLabel(colorscheme)
     .setColorValue(255)
     .setPosition(10, 35)
     .setSize(100, 20)
@@ -498,9 +514,9 @@ public void setupControls() {
     ;
   cp5 = new ControlP5(this);
   cp5.addSlider("ellipsesize")
-    .setColorForeground(color(0, 255, 200))
-    .setColorActive(color(0, 255, 200))
-    .setColorLabel(color(0, 255, 200))
+    .setColorForeground(colorscheme)
+    .setColorActive(colorscheme)
+    .setColorLabel(colorscheme)
     .setColorValue(255)
     .setPosition(10, 60)
     .setSize(100, 20)
@@ -508,178 +524,182 @@ public void setupControls() {
     .setValue(10)
     ;
   cp5.addToggle("doShowPoints")
-    .setColorForeground(color(0, 255, 200))
-    .setColorActive(color(0, 255, 200))
+    .setColorForeground(colorscheme)
+    .setColorActive(colorscheme)
     .setColorValue(0)
     .setLabel("ellipse ")
-    .setColorLabel(color(0, 255, 200))
+    .setColorLabel(colorscheme)
     .setPosition(190, 10)
     .setSize(20, 20)
     ;
   cp5.addToggle("doShowLines")
-    .setColorForeground(color(0, 255, 200))
-    .setColorActive(color(0, 255, 200))
+    .setColorForeground(colorscheme)
+    .setColorActive(colorscheme)
     .setColorValue(0)
     .setLabel("lines visible")
-    .setColorLabel(color(0, 255, 200))
+    .setColorLabel(colorscheme)
     .setPosition(230, 10)
     .setSize(20, 20)
     ;
   cp5.addToggle("drawOrganic")
-    .setColorForeground(color(0, 255, 200))
-    .setColorActive(color(0, 255, 200))
+    .setColorForeground(colorscheme)
+    .setColorActive(colorscheme)
     .setColorValue(0)
     .setLabel("organic")
-    .setColorLabel(color(0, 255, 200))
+    .setColorLabel(colorscheme)
     .setPosition(190, 60)
     .setSize(20, 20)
     ;
   cp5.addToggle("drawSimmetric")
-    .setColorForeground(color(0, 255, 200))
-    .setColorActive(color(0, 255, 200))
+    .setColorForeground(colorscheme)
+    .setColorActive(colorscheme)
     .setColorValue(0)
     .setLabel("Simmetric")
-    .setColorLabel(color(0, 255, 200))
+    .setColorLabel(colorscheme)
     .setPosition(220, 60)
     .setSize(20, 20)
     ;
   cp5.addToggle("randomEllipse")
-    .setColorForeground(color(0, 255, 200))
-    .setColorActive(color(0, 255, 200))
+    .setColorForeground(colorscheme)
+    .setColorActive(colorscheme)
     .setColorValue(0)
     .setLabel("random ellipse size")
-    .setColorLabel(color(0, 255, 200))
+    .setColorLabel(colorscheme)
     .setPosition(190, 100)
     .setSize(20, 20)
     ;
- /* cp5.addToggle("doShowDelaunay")
-    .setColorForeground(color(0, 255, 200))
-    .setColorActive(color(0, 255, 200))
+  cp5.addToggle("doShowDelaunay")
+    .setColorForeground(colorscheme)
+    .setColorActive(colorscheme)
     .setColorValue(0)
     .setLabel("delaunay triangulation")
-    .setColorLabel(color(0, 255, 200))
-    .setPosition(190, 135)
+    .setColorLabel(colorscheme)
+    .setPosition(190, 220)
     .setSize(20, 20)
     ;
-    */
+    
   cp5.addToggle("Rect")
-    .setColorForeground(color(0, 255, 200))
-    .setColorActive(color(0, 255, 200))
+    .setColorForeground(colorscheme)
+    .setColorActive(colorscheme)
     .setColorValue(0)
     .setLabel("rect")
-    .setColorLabel(color(0, 255, 200))
+    .setColorLabel(colorscheme)
     .setPosition(190, 175)
     .setSize(20, 20)
     ;
-  /*
+ /*
   cp5.addToggle("randomstroke")
-   .setColorForeground(color(0, 255, 200))
-   .setColorActive(color(0, 255, 200))
+   .setColorForeground(colorscheme)
+   .setColorActive(colorscheme)
    .setColorValue(0)
-   .setLabel("random stroke weight")
-   .setColorLabel(color(0, 255, 200))
-   .setPosition(190, 100)
+   .setLabel("random stroke")
+   .setColorLabel(colorscheme)
+   .setPosition(220, 310)
    .setSize(20, 20)
    ;
+   */
    cp5.addToggle("doClip")
-   .setColorForeground(color(0, 255, 200))
-   .setColorActive(color(0, 255, 200))
+   .setColorForeground(colorscheme)
+   .setColorActive(colorscheme)
    .setColorValue(0)
-   .setColorLabel(color(0, 255, 200))
-   .setPosition(190, 360)
+   .setColorLabel(colorscheme)
+   .setPosition(190, 310)
    .setSize(20, 20)
-   ;*/
+   ;
+   
+   /*
   cp5.addToggle("backgroundImage")
-    .setColorForeground(color(0, 255, 200))
-    .setColorActive(color(0, 255, 200))
+    .setColorForeground(colorscheme)
+    .setColorActive(colorscheme)
     .setColorValue(1)
     .setLabel("img color")
-    .setColorLabel(color(0, 255, 200))
+    .setColorLabel(colorscheme)
     .setPosition(190, 355)
     .setSize(50, 20)
     ;
+    */
   cp5.addButton("clearCanvas")
-    .setColorForeground(color(0, 255, 200))
-    .setColorActive(color(0, 255, 200))
+    .setColorForeground(colorscheme)
+    .setColorActive(colorscheme)
     .setColorValue(1)
     .setLabel("clear")
-    .setColorLabel(color(0, 255, 200))
+    .setColorLabel(colorscheme)
     .setPosition(190, 405)
     .setSize(50, 20)
     ;
   cp5.addButton("doSave")
-    .setColorForeground(color(0, 255, 200))
-    .setColorActive(color(0, 255, 200))
+    .setColorForeground(colorscheme)
+    .setColorActive(colorscheme)
     .setColorValue(0)
     .setLabel("SAVE")
-    .setColorLabel(color(0, 255, 200))
+    .setColorLabel(colorscheme)
     .setPosition(190, 555)
     .setSize(50, 50)
     ;
   cp5.addToggle("drawGradient")
-    .setColorForeground(color(0, 255, 200))
-    .setColorActive(color(0, 255, 200))
+    .setColorForeground(colorscheme)
+    .setColorActive(colorscheme)
     .setColorValue(0)
     .setLabel("gradient")
-    .setColorLabel(color(0, 255, 200))
+    .setColorLabel(colorscheme)
     .setPosition(10, 110)
     .setSize(20, 20)
     ; 
 
   cp5.addToggle("bw")
-    .setColorForeground(color(0, 255, 200))
-    .setColorActive(color(0, 255, 200))
+    .setColorForeground(colorscheme)
+    .setColorActive(colorscheme)
     .setColorValue(0)
     .setLabel("bw")
-    .setColorLabel(color(0, 255, 200))
+    .setColorLabel(colorscheme)
     .setPosition(80, 150)
     .setSize(20, 20)
     ;
   cp5 = new ControlP5(this);
   cp5.addToggle("HSL")
-    .setColorForeground(color(0, 255, 200))
-    .setColorActive(color(0, 255, 200))
+    .setColorForeground(colorscheme)
+    .setColorActive(colorscheme)
     .setColorValue(0)
     .setLabel("hsl")
-    .setColorLabel(color(0, 255, 200))
+    .setColorLabel(colorscheme)
     .setPosition(50, 110)
     .setSize(20, 20)
     ;
   cp5 = new ControlP5(this);
   cp5.addToggle("RGBmode")
-    .setColorForeground(color(0, 255, 200))
-    .setColorActive(color(0, 255, 200))
+    .setColorForeground(colorscheme)
+    .setColorActive(colorscheme)
     .setColorValue(0)
     .setLabel("RGB")
-    .setColorLabel(color(0, 255, 200))
+    .setColorLabel(colorscheme)
     .setPosition(80, 110)
     .setSize(20, 20)
     ;
 
   cp5.addToggle("randomColorMode")
-    .setColorForeground(color(0, 255, 200))
-    .setColorActive(color(0, 255, 200))
+    .setColorForeground(colorscheme)
+    .setColorActive(colorscheme)
     .setColorValue(1)
     .setLabel("diff")
-    .setColorLabel(color(0, 255, 200))
+    .setColorLabel(colorscheme)
     .setPosition(10, 150)
     .setSize(20, 20)
     ;
 
   cp5.addToggle("strokeGradient")
-    .setColorForeground(color(0, 255, 200))
-    .setColorActive(color(0, 255, 200))
+    .setColorForeground(colorscheme)
+    .setColorActive(colorscheme)
     .setColorValue(1)
     .setLabel("stroke")
-    .setColorLabel(color(0, 255, 200))
+    .setColorLabel(colorscheme)
     .setPosition(50, 150)
     .setSize(20, 20)
     ;
   cp5 = new ControlP5(this);
   cp5.addSlider("scalini")
-    .setColorForeground(color(0, 255, 200))
-    .setColorActive(color(0, 255, 200))
-    .setColorLabel(color(0, 255, 200))
+    .setColorForeground(colorscheme)
+    .setColorActive(colorscheme)
+    .setColorLabel(colorscheme)
     .setPosition(10, 200)
     .setSize(100, 20)
     .setRange(3, 50)
@@ -687,45 +707,45 @@ public void setupControls() {
     ;
   cp5 = new ControlP5(this);
   cp5.addSlider("estremi")
-    .setColorForeground(color(0, 255, 200))
-    .setColorActive(color(0, 255, 200))
-    .setColorLabel(color(0, 255, 200))
+    .setColorForeground(colorscheme)
+    .setColorActive(colorscheme)
+    .setColorLabel(colorscheme)
     .setPosition(10, 230)
     .setSize(100, 20)
     .setRange(0, 360)
     .setValue(255)
     ;
   cp5.addSlider("inizio")
-    .setColorForeground(color(0, 255, 200))
-    .setColorActive(color(0, 255, 200))
-    .setColorLabel(color(0, 255, 200))
+    .setColorForeground(colorscheme)
+    .setColorActive(colorscheme)
+    .setColorLabel(colorscheme)
     .setPosition(10, 260)
     .setSize(100, 20)
     .setRange(0, 360)
     .setValue(0)
     ;
   cp5.addSlider("bright")
-    .setColorForeground(color(0, 255, 200))
-    .setColorActive(color(0, 255, 200))
-    .setColorLabel(color(0, 255, 200))
+    .setColorForeground(colorscheme)
+    .setColorActive(colorscheme)
+    .setColorLabel(colorscheme)
     .setPosition(10, 310)
     .setSize(100, 20)
     .setRange(0, 100)
     .setValue(50)
     ;
   cp5.addSlider("satura")
-    .setColorForeground(color(0, 255, 200))
-    .setColorActive(color(0, 255, 200))
-    .setColorLabel(color(0, 255, 200))
+    .setColorForeground(colorscheme)
+    .setColorActive(colorscheme)
+    .setColorLabel(colorscheme)
     .setPosition(10, 340)
     .setSize(100, 20)
     .setRange(0, 100)
     .setValue(50)
     ;
   cp5.addSlider("adjustWidth")
-    .setColorForeground(color(0, 255, 200))
-    .setColorActive(color(0, 255, 200))
-    .setColorLabel(color(0, 255, 200))
+    .setColorForeground(colorscheme)
+    .setColorActive(colorscheme)
+    .setColorLabel(colorscheme)
     .setPosition(10, 370)
     .setSize(100, 20)
     .setRange(50, 450)
@@ -734,9 +754,9 @@ public void setupControls() {
 
     ;
   cp5.addSlider("adjustHeight")
-    .setColorForeground(color(0, 255, 200))
-    .setColorActive(color(0, 255, 200))
-    .setColorLabel(color(0, 255, 200))
+    .setColorForeground(colorscheme)
+    .setColorActive(colorscheme)
+    .setColorLabel(colorscheme)
     .setPosition(10, 400)
     .setSize(100, 20)
     .setRange(50, 700)
@@ -747,20 +767,20 @@ public void setupControls() {
   //SPIRAL
   /*
    cp5.addButton("spirale")
-   .setColorForeground(color(0, 255, 200))
-   .setColorActive(color(0, 255, 200))
+   .setColorForeground(colorscheme)
+   .setColorActive(colorscheme)
    .setColorValue(1)
    .setLabel("spirale")
-   .setColorLabel(color(0, 255, 200))
+   .setColorLabel(colorscheme)
    .setPosition(10, 455)
    .setSize(20, 20)
    ;*/
   cp5 = new ControlP5(this);
   cp5.addSlider("centerLimit")
     .setLabel("dimensione spirale")
-    .setColorForeground(color(0, 255, 200))
-    .setColorActive(color(0, 255, 200))
-    .setColorLabel(color(0, 255, 200))
+    .setColorForeground(colorscheme)
+    .setColorActive(colorscheme)
+    .setColorLabel(colorscheme)
     .setColorValue(255)
     .setPosition(10, 485)
     .setSize(100, 20)
@@ -782,7 +802,7 @@ public void setupVoronoi() {
 }
   public void settings() {  size(850, 750, P2D); }
   static public void main(String[] passedArgs) {
-    String[] appletArgs = new String[] { "voronoigrid" };
+    String[] appletArgs = new String[] { "ababo_pattern" };
     if (passedArgs != null) {
       PApplet.main(concat(appletArgs, passedArgs));
     } else {

@@ -81,8 +81,8 @@ void setup() {
   doClip=true;
   setupControls();
 
-  bg = loadImage("img/pic3.jpg");
-  bg.resize(0, width);
+ // bg = loadImage("img/pic3.jpg");
+  //bg.resize(0, width);
 
   rect(clipBounds.x, clipBounds.y, clipBounds.width, clipBounds.height);
 
@@ -110,7 +110,7 @@ void draw() {
     for (int gridX=0; gridX<tileCount; gridX++) {
       int px = (int) (gridX * rectSize); 
       int py = (int) (gridY * rectSize); 
-      colors[i] = bg.get(px, py);
+   //   colors[i] = bg.get(px, py);
       i++;
     }
   }

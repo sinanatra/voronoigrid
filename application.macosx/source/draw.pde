@@ -20,7 +20,7 @@ void drawVoronoi() {
     int numeroScalini = scalini;
     strokeWeight(0);
 
-    if (!drawGradient) {
+    if (!drawGradient ) {
       strokeWeight(0);
       numeroScalini = 1;
       start = 255;
@@ -31,6 +31,8 @@ void drawVoronoi() {
       ///
       noFill();
     }
+
+
     float step = 1.0 / numeroScalini;
     for (float i = 1; i > 0; i -= step) {
 
@@ -47,7 +49,7 @@ void drawVoronoi() {
 
 
 
-      if (HSL==true) {
+      if (HSL==true && drawGradient ) {
 
         strokeWeight(0);    // use strokedim for same size, weight changes by the area
         colorMode(HSB, 360, 100, 100);
@@ -64,12 +66,16 @@ void drawVoronoi() {
         strokeWeight(1);    // use strokedim for same size, weight changes by the area
       }
 
-      if (bw) {
+      if (bw && drawGradient) {
         colorMode(RGB, 255, 255, 255);
         noFill();
         strokeWeight(strokedim);    // use strokedim for same size, weight changes by the area
+        strokeWeight(0);
+        if (doShowLines) {
+          strokeWeight(strokedim);    // use strokedim for same size, weight changes by the area
+        }
       }
-      if (HSL==false && RGBmode == true && bw == true) {
+      if (HSL==false && RGBmode == true && bw == true && drawGradient) {
         colorMode(RGB, 255, 255, 255);
         fill(colore, colore, colore);
         noStroke();
@@ -99,9 +105,11 @@ void drawVoronoi() {
     if (doClip) {
       fullPoly = clip.clipPolygon(fullPoly);
     }
-    if (doShowDelaunay &&(!doClip || clip.getBounds().containsPoint(centro))) {
-      stroke(255, 0, 0);
-      strokeWeight(strokedim);    // use strokedim for same size, weight changes by the area
+    if (doShowDelaunay &&(!doClip || clip.getBounds().containsPoint(centro)) ) {
+
+      stroke(colorscheme);
+      strokeWeight(1);  
+
 
       beginShape(TRIANGLES);
       for (Triangle2D t : voronoi.getTriangles()) {
@@ -132,7 +140,7 @@ void drawVoronoi() {
         ellipse(centro.x, centro.y, size, size);
       }
       if (randomEllipse) {
-        fill(color(0, 255, 200));
+        fill(colorscheme);
         ellipse(centro.x, centro.y, size, size);
         if (backgroundImage && randomEllipse) {
 
@@ -142,7 +150,7 @@ void drawVoronoi() {
         }
       } else if (Rect) {
         rectMode(CENTER);  // Set rectMode to CENTER
-        fill(color(0, 255, 200));
+        fill(colorscheme);
         noStroke();
         rect(centro.x, centro.y, ellipsesize, ellipsesize);
 
@@ -156,7 +164,7 @@ void drawVoronoi() {
         }
       } else {
         noStroke();
-        fill(color(0, 255, 200));
+        fill(colorscheme);
         ellipse(centro.x, centro.y, ellipsesize, ellipsesize);
 
         if (backgroundImage) {

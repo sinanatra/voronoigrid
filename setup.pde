@@ -119,7 +119,7 @@ void setupControls() {
    .setSize(20, 20)
    ;
    
-   
+   /*
   cp5.addToggle("backgroundImage")
     .setColorForeground(colorscheme)
     .setColorActive(colorscheme)
@@ -129,6 +129,7 @@ void setupControls() {
     .setPosition(190, 355)
     .setSize(50, 20)
     ;
+    */
   cp5.addButton("clearCanvas")
     .setColorForeground(colorscheme)
     .setColorActive(colorscheme)
@@ -147,6 +148,7 @@ void setupControls() {
     .setPosition(190, 555)
     .setSize(50, 50)
     ;
+    /*
   cp5.addToggle("drawGradient")
     .setColorForeground(colorscheme)
     .setColorActive(colorscheme)
@@ -156,7 +158,7 @@ void setupControls() {
     .setPosition(10, 110)
     .setSize(20, 20)
     ; 
-
+*/
   cp5.addToggle("bw")
     .setColorForeground(colorscheme)
     .setColorActive(colorscheme)
@@ -171,17 +173,17 @@ void setupControls() {
     .setColorForeground(colorscheme)
     .setColorActive(colorscheme)
     .setColorValue(0)
-    .setLabel("hsl")
+    .setLabel("gradient")
     .setColorLabel(colorscheme)
-    .setPosition(50, 110)
-    .setSize(20, 20)
+    .setPosition(10, 110)
+    .setSize(60, 20)
     ;
   cp5 = new ControlP5(this);
   cp5.addToggle("RGBmode")
     .setColorForeground(colorscheme)
     .setColorActive(colorscheme)
     .setColorValue(0)
-    .setLabel("RGB")
+    .setLabel("monochrome")
     .setColorLabel(colorscheme)
     .setPosition(80, 110)
     .setSize(20, 20)
