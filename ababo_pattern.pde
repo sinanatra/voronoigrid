@@ -81,7 +81,7 @@ void setup() {
   doClip=true;
   setupControls();
 
- // bg = loadImage("img/pic3.jpg");
+  // bg = loadImage("img/pic3.jpg");
   //bg.resize(0, width);
 
   rect(clipBounds.x, clipBounds.y, clipBounds.width, clipBounds.height);
@@ -90,7 +90,14 @@ void setup() {
 }
 
 void draw() {
-  background(255);
+  if (HSL == true) {
+    colorMode(HSB, 360, 100, 100);
+
+    background(0, 0, 100);
+  } else {
+    colorMode(RGB, 255, 255, 255);
+    background(255);
+  }
   clipBounds.width = adjustWidth;
   clipBounds.height = adjustHeight;
 
@@ -110,7 +117,7 @@ void draw() {
     for (int gridX=0; gridX<tileCount; gridX++) {
       int px = (int) (gridX * rectSize); 
       int py = (int) (gridY * rectSize); 
-   //   colors[i] = bg.get(px, py);
+      //   colors[i] = bg.get(px, py);
       i++;
     }
   }

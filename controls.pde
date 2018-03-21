@@ -48,9 +48,9 @@ void keyPressed() {
   }
   if (key == '1') {
     int k= 0;
-  
+
     for (k=0; k<width; k+=gridSize) {
-      drawPoint( k,  clipBounds.y + adjustHeight - gridSize);
+      drawPoint( k, clipBounds.y + adjustHeight - gridSize);
     }
   }
 
@@ -63,9 +63,16 @@ void keyPressed() {
     }
   }
 
+  if (key == '3') {
+    int k= 0;
+
+    for (k=0; k<width; k+=gridSize) {
+      drawPoint( k, clipBounds.x +  adjustHeight / gridSize );
+    }
+  }
 
   if (key =='s') {
-    theta=0; //reset theta
+    theta=0; //reset 1theta
     for (int k=0; k<centerLimit; k++) {
       theta +=1;
       //One spiral in center with l1arge-ish shapes
