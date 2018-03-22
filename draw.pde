@@ -57,13 +57,20 @@ void drawVoronoi() {
         doShowPoints = false;
       }
 
-      if (randomColorMode) {
+      if (randomColorMode && RGBmode == false) {
         colorMode(HSB, 860, 100, 100);
         strokeWeight(0);    // use strokedim for same size, weight changes by the area
 
         float randomColor = pow(cos(poly.getArea()), 2) * (end - start) + start;
         fill(randomColor, brightness, saturation);
       }
+      if (randomColorMode && RGBmode == true) {
+        colorMode(RGB, 255, 255, 255);
+        strokeWeight(0);    // use strokedim for same size, weight changes by the area
+
+        float randomColor = pow(cos(poly.getArea()), 2) * (end - start) + start;
+        fill(randomColor, brightness, saturation);
+      }      
       if (strokeGradient==true) {
         strokeWeight(1);    // use strokedim for same size, weight changes by the area
       }

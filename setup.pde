@@ -261,7 +261,7 @@ void setupControls() {
     .setColorLabel(colorscheme)
     .setPosition(10, 370)
     .setSize(100, 20)
-    .setRange(50, 450)
+    .setRange(50, 650)
     .setValue(300)
     .setLabel("Width")
 

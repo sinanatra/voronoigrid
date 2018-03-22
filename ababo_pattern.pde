@@ -16,9 +16,7 @@ PImage img;
 color[] colors;
 color colorscheme = #cccccc;
 color backgroundcolor = #000000;
-
 String sortMode = null; 
-//PShape fama;
 PShape pattern;
 int fontend = 8;
 int nchars = 0;
@@ -66,7 +64,6 @@ float bright=100;
 float sat=100;
 float satura=100;
 
-
 ControlP5 cp5;
 Slider abc;
 FloatRange xpos, ypos;// ranges for x/y positions of points
@@ -76,7 +73,7 @@ Voronoi voronoi = new Voronoi();// empty voronoi mesh container
 Rect clipBounds = new Rect(375, 30, adjustWidth, adjustHeight /*280*/);// rectangle that clips everything
 
 void setup() {
-  size(850, 750, P2D);
+  size(1050, 750, P2D);
 
   doClip=true;
   setupControls();

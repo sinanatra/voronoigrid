@@ -63,13 +63,7 @@ void keyPressed() {
     }
   }
 
-  if (key == '3') {
-    int k= 0;
-
-    for (k=0; k<width; k+=gridSize) {
-      drawPoint( k, clipBounds.x +  adjustHeight / gridSize );
-    }
-  }
+  
 
   if (key =='s') {
     theta=0; //reset 1theta
