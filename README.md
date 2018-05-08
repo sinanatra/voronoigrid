@@ -15,4 +15,4 @@ Experiment with gradients and the all sliders. Write me if you notice any bugs.
 Save a vector `.pdf` with the `save` button
 
 
-![ScreenShot](http://files.cargocollective.com/761261/Schermata-2017-10-22-alle-12.23.03.png)
+![ScreenShot](https://78.media.tumblr.com/d734aa0172d85d4c7a2fae8f55ed807b/tumblr_p8f1kgjDxq1vjugrho1_1280.png)
