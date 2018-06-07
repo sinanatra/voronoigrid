@@ -13,6 +13,8 @@ import processing.pdf.*;
 import java.util.Calendar;
 boolean savePDF = false;
 PImage img; 
+PFont liguria;
+
 color[] colors;
 color colorscheme = #cccccc;
 color backgroundcolor = #000000;
@@ -43,6 +45,7 @@ boolean doShowDelaunay;
 boolean strokeGradient;
 boolean backgroundImage;
 boolean Rect;
+boolean Info;
 boolean bw;
 //  polygon clipper
 SutherlandHodgemanClipper clip;
@@ -70,10 +73,12 @@ FloatRange xpos, ypos;// ranges for x/y positions of points
 ToxiclibsSupport gfx;// helper class for rendering
 Voronoi voronoi = new Voronoi();// empty voronoi mesh container
 
-Rect clipBounds = new Rect(375, 30, adjustWidth, adjustHeight /*280*/);// rectangle that clips everything
+Rect clipBounds = new Rect(375, 10, adjustWidth, adjustHeight /*280*/);// rectangle that clips everything
 
 void setup() {
   size(1050, 750, P2D);
+  //fullScreen(P2D);
+  smooth(2);
 
   doClip=true;
   setupControls();
@@ -87,6 +92,8 @@ void setup() {
 }
 
 void draw() {
+  liguria = createFont("liguria.ttf",23);
+
   if (HSL == true) {
     colorMode(HSB, 360, 100, 100);
 
@@ -102,7 +109,7 @@ void draw() {
   if (doSave) {
     doSave=true;
   }
-
+ 
   strokeJoin(BEVEL);
   int tileCount = 3; 
 

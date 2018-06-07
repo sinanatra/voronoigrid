@@ -92,7 +92,6 @@ void drawVoronoi() {
           strokeWeight(1);    // use strokedim for same size, weight changes by the area
         }
       } 
-
       if (doClip) {
         scalato = clip.clipPolygon(scalato);
       }
@@ -141,44 +140,30 @@ void drawVoronoi() {
 
       float size = pow(cos(poly.getCircumference()), 2) * ((ellipsesize+20) - 5) + ellipsesize ;
       //float size = pow(cos(poly.getCircumference()), 2) * ((20) - 5) +5 ;
-      if ( randomEllipse) {
 
-        fill(colors[0]);          // Set the SVG fill to white
-
-        ellipse(centro.x, centro.y, size, size);
-      }
       if (randomEllipse) {
+        noStroke();
+
         fill(colorscheme);
         ellipse(centro.x, centro.y, size, size);
         if (backgroundImage && randomEllipse) {
 
           fill(colors[0]);          // Set the SVG fill to white
-
           ellipse(centro.x, centro.y, size, size);
         }
-      } else if (Rect) {
+      }  
+      if (Rect) {
         rectMode(CENTER);  // Set rectMode to CENTER
         fill(colorscheme);
         noStroke();
         rect(centro.x, centro.y, ellipsesize, ellipsesize);
-
-        if (backgroundImage && Rect) {
-
-
-          rectMode(CENTER);  // Set rectMode to CENTER
-          fill(colors[0]);          // Set the SVG fill to white
-          noStroke();
-          rect(centro.x, centro.y, ellipsesize, ellipsesize);
-        }
       } else {
         noStroke();
         fill(colorscheme);
         ellipse(centro.x, centro.y, ellipsesize, ellipsesize);
 
         if (backgroundImage) {
-
           fill(colors[0]);          // Set the SVG fill to white
-
           ellipse(centro.x, centro.y, ellipsesize, ellipsesize);
         } else {
           colorMode(RGB, 255, 255, 255);
@@ -188,15 +173,63 @@ void drawVoronoi() {
   }  
 
   if (clearCanvas) {
-
     voronoi = new Voronoi();
     clearCanvas = false;
     background(255);
     strokeWeight(1);
-    Rect clipBounds = new Rect(375, 30, adjustWidth, adjustHeight /*280*/);// rectangle that clips everything
-
+    Rect clipBounds = new Rect(375, 10, adjustWidth, adjustHeight /*280*/);// rectangle that clips everything
     rect(clipBounds.x, clipBounds.y, clipBounds.width, clipBounds.height);
   }
+  if (Info) {
+    textFont(liguria);
+    textSize(20); 
+
+    fill(0, 0, 0);
+    text("Gridsize :   change the distance", 400, 40);
+    text("Strokedim :   change the size of stroke", 400, 60);
+    text("Ellipsesize :   change the size of the ellipses", 400, 80);
+    text("- - - - - - - - - - - - - - - - - - - - - ", 400, 100);
+    text("Ellipse:   show / hide dots", 400, 120);
+    text("Lines Visible :   show / hide lines", 400, 140);
+    text("Organic :   draw without grid", 400, 160);
+    text("Simmetric :   draw simmetric", 400, 180);
+    text("RandomEllipse Size :   random ellipses", 400, 200);
+    text("- - - - - - - - - - - - - - - - - - - - - ", 400, 220);
+    text("Gradient :   create HSL gradient", 400, 240);
+    text("Monocrome :   b/w gradient", 400, 260);
+    text("Diff :   each polygon has a different hue", 400, 280);
+    text("Stroke :   show lines in gradients", 400, 300);
+    text("Bw :   just lines", 400, 320);
+    text("Scalini :   number of steps in gradient", 400, 340);
+    text("Estremi / Inizio :   HSL value", 400, 360);
+    text("- - - - - - - - - - - - - - - - - - - - - ", 400, 380);
+    text("Rect :   Rectangles instead of circles", 400, 400);
+    text("Delaunay Triangulation :   Lines connecting dots", 400, 420);
+    text("- - - - - - - - - - - - - - - - - - - - - ", 400, 440);
+    text("Bright / Satura:   HSL Values", 400, 460);
+    text("Width:   Resize Canvas in Width", 400, 480);
+    text("Heigth:   Resize Canvas in Heigth", 400, 500);
+    text("- - - - - - - - - - - - - - - - - - - - - ", 400, 520);
+    text("Doclip:   Remove Boundings", 400, 540);
+
+    text("Clear:   Empties Canvas", 400, 560);
+    text("- - - - - - - - - - - - - - - - - - - - - ", 400, 580);
+
+    text("Dimensione Spirale:   Spirals size", 400, 600);
+    text("Save:   Saves a vector pdf", 400, 620);
+
+
+    text("s :   Create Spirals", 400, 640);
+    text("1 :   Horizontal Dots", 400, 660);
+    text("2 :   Vertical Dots", 400, 680);
+    text("! :   Add Random", 400, 700);
+    text("Made with <3 by Giacomo Nanni", 600, 700);
+
+    /*text("c: toggle clipping", 20, 620);
+     text("h: toggle help display", 20, 640);
+     text("space: save frame", 20, 660);*/
+  }
+  fill(255);
 }
 
 Vec2D getCenter(Polygon2D polygon) {

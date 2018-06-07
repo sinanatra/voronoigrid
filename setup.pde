@@ -89,7 +89,7 @@ void setupControls() {
     .setPosition(190, 220)
     .setSize(20, 20)
     ;
-    
+   /* 
   cp5.addToggle("Rect")
     .setColorForeground(colorscheme)
     .setColorActive(colorscheme)
@@ -99,6 +99,7 @@ void setupControls() {
     .setPosition(190, 175)
     .setSize(20, 20)
     ;
+    */
  /*
   cp5.addToggle("randomstroke")
    .setColorForeground(colorscheme)
@@ -145,7 +146,7 @@ void setupControls() {
     .setColorValue(0)
     .setLabel("SAVE")
     .setColorLabel(colorscheme)
-    .setPosition(190, 555)
+    .setPosition(190, 550)
     .setSize(50, 50)
     ;
     /*
@@ -262,7 +263,7 @@ void setupControls() {
     .setPosition(10, 370)
     .setSize(100, 20)
     .setRange(50, 650)
-    .setValue(300)
+    .setValue(650)
     .setLabel("Width")
 
     ;
@@ -276,6 +277,15 @@ void setupControls() {
     .setValue(700)
     .setLabel("Heigth")
 
+    ;
+    cp5.addToggle("Info")
+    .setColorForeground(colorscheme)
+    .setColorActive(colorscheme)
+    .setColorValue(0)
+    .setLabel("how to use")
+    .setColorLabel(colorscheme)
+    .setPosition(10, 700)
+    .setSize(20, 20)
     ;
   //SPIRAL
   /*
